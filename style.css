@@ -1,0 +1,168 @@
+/* GLOBAL RESET + TYPOGRAPHY */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    scroll-behavior: smooth;
+}
+
+body {
+    background: #fff;
+    color: #111;
+    padding: 0 1rem;
+}
+
+/* MAIN NAVIGATION */
+nav, footer, .site-nav {
+    display: flex;
+    justify-content: center;
+    padding: 1rem 0;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+nav a, .site-nav a {
+    color: #111;
+    text-decoration: none;
+    margin: 0 1rem;
+    transition: color 0.25s ease;
+}
+
+nav a:hover, .site-nav a:hover {
+    color: #bfa84b; /* gold accent */
+}
+
+/* HERO SECTION */
+.hero {
+    text-align: center;
+    padding: 4rem 1rem;
+    background: #f9f9f9;
+    border-bottom: 2px solid #eee;
+}
+
+.hero h1 {
+    font-size: 2.8rem;
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+}
+
+.hero p {
+    font-size: 1.2rem;
+    color: #444;
+}
+
+/* GRID UTILITIES */
+.service-grid,
+.case-grid,
+.insight-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    margin: 2rem 0;
+}
+
+/* CARD STYLES */
+.service-card,
+.case-card,
+.insight-card {
+    background: #fff;
+    border: 1px solid #ddd;
+    padding: 1.5rem;
+    border-radius: 8px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.service-card:hover,
+.case-card:hover,
+.insight-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+.service-card h3,
+.case-card h3,
+.insight-card h3 {
+    font-size: 1.4rem;
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+}
+
+.service-card p,
+.case-card p,
+.insight-card p {
+    font-size: 1rem;
+    color: #444;
+}
+
+/* CALL TO ACTION SECTION */
+.cta {
+    text-align: center;
+    padding: 2.5rem 1rem;
+    margin: 2rem 0 1rem 0;
+    background: #111;
+    color: #fff;
+    border-radius: 12px;
+}
+
+.cta h2 {
+    font-size: 2rem;
+    margin-bottom: 0.75rem;
+}
+
+.cta p {
+    font-size: 1.1rem;
+}
+
+.btn {
+    display: inline-block;
+    padding: 0.85rem 1.8rem;
+    margin-top: 1rem;
+    background: #bfa84b; /* gold accent */
+    color: #111;
+    font-weight: 700;
+    text-decoration: none;
+    letter-spacing: 0.8px;
+    border-radius: 4px;
+    transition: background 0.25s ease, color 0.25s ease;
+}
+
+.btn:hover {
+    background: #9a8839;
+    color: #fff;
+}
+
+/* TEXT + FOOTER */
+footer {
+    text-align: center;
+    padding: 1.5rem 0;
+    font-size: 0.9rem;
+    color: #666;
+    border-top: 1px solid #eee;
+    margin-top: 3rem;
+}
+
+/* RESPONSIVE BREAKPOINTS */
+@media (max-width: 768px) {
+    .hero h1 {
+        font-size: 2.4rem;
+    }
+    nav a {
+        margin: 0 0.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    html {
+        font-size: 15px;
+    }
+    .hero h1 {
+        font-size: 2rem;
+    }
+}
+
