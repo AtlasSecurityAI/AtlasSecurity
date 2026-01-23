@@ -1,4 +1,6 @@
-/* GLOBAL RESET + TYPOGRAPHY */
+/* =========================
+   GLOBAL RESET + TYPOGRAPHY
+========================= */
 * {
     margin: 0;
     padding: 0;
@@ -6,58 +8,86 @@
 }
 
 html {
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Inter', sans-serif;
     font-size: 16px;
     line-height: 1.6;
     scroll-behavior: smooth;
 }
 
 body {
-    background: #fff;
-    color: #111;
+    background-color: #f6f7f8;
+    color: #111418;
     padding: 0 1rem;
+    transition: background-color 0.2s, color 0.2s;
 }
 
-/* MAIN NAVIGATION */
+body.dark {
+    background-color: #101922;
+    color: #ffffff;
+}
+
+/* =========================
+   MAIN NAVIGATION + HEADER
+========================= */
 nav, footer, .site-nav {
     display: flex;
     justify-content: center;
+    align-items: center;
     padding: 1rem 0;
     font-weight: 600;
     font-size: 1rem;
 }
 
 nav a, .site-nav a {
-    color: #111;
+    color: #111418;
     text-decoration: none;
     margin: 0 1rem;
     transition: color 0.25s ease;
 }
 
-nav a:hover, .site-nav a:hover {
-    color: #bfa84b; /* gold accent */
+body.dark nav a,
+body.dark .site-nav a {
+    color: #ffffff;
 }
 
-/* HERO SECTION */
+nav a:hover, .site-nav a:hover {
+    color: #137fec; /* primary blue */
+}
+
+/* =========================
+   HERO / FEATURED SECTION
+========================= */
 .hero {
     text-align: center;
     padding: 4rem 1rem;
-    background: #f9f9f9;
-    border-bottom: 2px solid #eee;
+    background-color: #f6f7f8;
+    border-bottom: 2px solid #e5e7eb;
+    border-radius: 1rem;
+}
+
+body.dark .hero {
+    background-color: #101922;
+    border-color: #1f2937;
 }
 
 .hero h1 {
     font-size: 2.8rem;
+    font-weight: 800;
     margin-bottom: 0.5rem;
-    font-weight: 700;
 }
 
 .hero p {
     font-size: 1.2rem;
-    color: #444;
+    color: #4b5563;
 }
 
-/* GRID UTILITIES */
+body.dark .hero p {
+    color: #9ca3af;
+}
+
+/* =========================
+   GRID LAYOUTS
+========================= */
 .service-grid,
 .case-grid,
 .insight-grid {
@@ -67,21 +97,36 @@ nav a:hover, .site-nav a:hover {
     margin: 2rem 0;
 }
 
-/* CARD STYLES */
+/* =========================
+   CARD STYLES
+========================= */
 .service-card,
 .case-card,
-.insight-card {
-    background: #fff;
-    border: 1px solid #ddd;
+.insight-card,
+.card,
+.featured-section {
+    background-color: #ffffff;
+    border: 1px solid #f0f2f4;
     padding: 1.5rem;
-    border-radius: 8px;
+    border-radius: 0.75rem;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+body.dark .service-card,
+body.dark .case-card,
+body.dark .insight-card,
+body.dark .card,
+body.dark .featured-section {
+    background-color: #1a1f29;
+    border-color: #2c2f3a;
 }
 
 .service-card:hover,
 .case-card:hover,
-.insight-card:hover {
-    transform: translateY(-6px);
+.insight-card:hover,
+.card:hover,
+.featured-section:hover {
+    transform: translateY(-4px);
     box-shadow: 0 8px 20px rgba(0,0,0,0.1);
 }
 
@@ -89,25 +134,66 @@ nav a:hover, .site-nav a:hover {
 .case-card h3,
 .insight-card h3 {
     font-size: 1.4rem;
-    margin-bottom: 0.5rem;
     font-weight: 700;
+    margin-bottom: 0.5rem;
 }
 
 .service-card p,
 .case-card p,
 .insight-card p {
     font-size: 1rem;
-    color: #444;
+    color: #4b5563;
 }
 
-/* CALL TO ACTION SECTION */
+body.dark .service-card p,
+body.dark .case-card p,
+body.dark .insight-card p {
+    color: #9ca3af;
+}
+
+/* =========================
+   BUTTONS
+========================= */
+.btn,
+.btn-primary {
+    display: inline-block;
+    padding: 0.85rem 1.8rem;
+    font-weight: 700;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    text-align: center;
+    transition: background-color 0.25s, color 0.25s;
+}
+
+.btn {
+    background-color: #bfa84b; /* gold accent */
+    color: #111418;
+}
+
+.btn:hover {
+    background-color: #9a8839;
+    color: #ffffff;
+}
+
+.btn-primary {
+    background-color: #137fec; /* primary blue */
+    color: #ffffff;
+}
+
+.btn-primary:hover {
+    background-color: rgba(19,127,236,0.9);
+}
+
+/* =========================
+   CALL TO ACTION (CTA)
+========================= */
 .cta {
     text-align: center;
     padding: 2.5rem 1rem;
     margin: 2rem 0 1rem 0;
-    background: #111;
-    color: #fff;
-    border-radius: 12px;
+    background-color: #111418;
+    color: #ffffff;
+    border-radius: 1rem;
 }
 
 .cta h2 {
@@ -119,35 +205,87 @@ nav a:hover, .site-nav a:hover {
     font-size: 1.1rem;
 }
 
-.btn {
-    display: inline-block;
-    padding: 0.85rem 1.8rem;
-    margin-top: 1rem;
-    background: #bfa84b; /* gold accent */
-    color: #111;
+/* =========================
+   TAGS / LABELS
+========================= */
+.label-primary {
+    font-size: 11px;
     font-weight: 700;
-    text-decoration: none;
-    letter-spacing: 0.8px;
-    border-radius: 4px;
-    transition: background 0.25s ease, color 0.25s ease;
+    text-transform: uppercase;
+    background-color: rgba(19,127,236,0.1);
+    color: #137fec;
+    padding: 0.15rem 0.5rem;
+    border-radius: 9999px;
 }
 
-.btn:hover {
-    background: #9a8839;
-    color: #fff;
+/* =========================
+   PROFILE / AVATAR
+========================= */
+.size-5, .size-6, .size-8, .size-10 {
+    border-radius: 9999px;
+    background-size: cover;
+    background-position: center;
 }
 
-/* TEXT + FOOTER */
+/* =========================
+   INPUTS / SEARCH / EMAIL
+========================= */
+input[type="text"], input[type="email"], input[type="search"] {
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background-color: transparent;
+    transition: border-color 0.2s;
+}
+
+input:focus {
+    outline: none;
+    border-color: #137fec;
+}
+
+/* =========================
+   FOOTER
+========================= */
 footer {
     text-align: center;
-    padding: 1.5rem 0;
+    padding: 3rem 1rem;
     font-size: 0.9rem;
-    color: #666;
-    border-top: 1px solid #eee;
-    margin-top: 3rem;
+    color: #6b7280;
+    border-top: 1px solid #f0f2f4;
 }
 
-/* RESPONSIVE BREAKPOINTS */
+body.dark footer {
+    background-color: #101922;
+    border-color: #1f2937;
+    color: #9ca3af;
+}
+
+/* =========================
+   HOVER EFFECTS / TRANSITIONS
+========================= */
+.card:hover .card-title,
+.insight-card:hover h3 {
+    color: #137fec;
+    transition: color 0.2s;
+}
+
+/* =========================
+   HORIZONTAL SCROLL CATEGORIES
+========================= */
+.categories-scroll {
+    display: flex;
+    overflow-x: auto;
+    gap: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+
+.categories-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+/* =========================
+   RESPONSIVE BREAKPOINTS
+========================= */
 @media (max-width: 768px) {
     .hero h1 {
         font-size: 2.4rem;
@@ -165,4 +303,3 @@ footer {
         font-size: 2rem;
     }
 }
-
