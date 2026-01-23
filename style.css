@@ -1,23 +1,12 @@
 /* =========================
-   GLOBAL RESET + TYPOGRAPHY
+   Custom Styles for AtlasSecurity
 ========================= */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
 
-html {
-    font-family: 'Inter', sans-serif;
-    font-size: 16px;
-    line-height: 1.6;
-    scroll-behavior: smooth;
-}
-
+/* Base Body Styling */
 body {
+    font-family: 'Inter', sans-serif;
     background-color: #f6f7f8;
     color: #111418;
-    padding: 0 1rem;
     transition: background-color 0.2s, color 0.2s;
 }
 
@@ -26,210 +15,113 @@ body.dark {
     color: #ffffff;
 }
 
-/* =========================
-   MAIN NAVIGATION + HEADER
-========================= */
-nav, footer, .site-nav {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 1rem 0;
-    font-weight: 600;
-    font-size: 1rem;
+/* Sticky Header */
+.sticky-nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    backdrop-filter: blur(8px);
+    background-color: rgba(255, 255, 255, 0.8);
+    border-bottom: 1px solid #f0f2f4;
 }
 
-nav a, .site-nav a {
-    color: #111418;
-    text-decoration: none;
-    margin: 0 1rem;
-    transition: color 0.25s ease;
-}
-
-body.dark nav a,
-body.dark .site-nav a {
-    color: #ffffff;
-}
-
-nav a:hover, .site-nav a:hover {
-    color: #137fec; /* primary blue */
-}
-
-/* =========================
-   HERO / FEATURED SECTION
-========================= */
-.hero {
-    text-align: center;
-    padding: 4rem 1rem;
-    background-color: #f6f7f8;
-    border-bottom: 2px solid #e5e7eb;
-    border-radius: 1rem;
-}
-
-body.dark .hero {
-    background-color: #101922;
+body.dark .sticky-nav {
+    background-color: rgba(16, 25, 34, 0.8);
     border-color: #1f2937;
 }
 
-.hero h1 {
-    font-size: 2.8rem;
-    font-weight: 800;
-    margin-bottom: 0.5rem;
+/* Scrollbar Hiding */
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 }
 
-.hero p {
-    font-size: 1.2rem;
-    color: #4b5563;
+/* Buttons */
+.btn-primary {
+    background-color: #137fec;
+    color: white;
+    font-weight: bold;
+    border-radius: 0.5rem;
+    padding: 0.5rem 1.25rem;
+    transition: background-color 0.2s;
+}
+.btn-primary:hover {
+    background-color: rgba(19, 127, 236, 0.9);
 }
 
-body.dark .hero p {
-    color: #9ca3af;
-}
-
-/* =========================
-   GRID LAYOUTS
-========================= */
-.service-grid,
-.case-grid,
-.insight-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 2rem;
-    margin: 2rem 0;
-}
-
-/* =========================
-   CARD STYLES
-========================= */
-.service-card,
-.case-card,
-.insight-card,
-.card,
-.featured-section {
+/* Cards */
+.card {
     background-color: #ffffff;
     border: 1px solid #f0f2f4;
-    padding: 1.5rem;
     border-radius: 0.75rem;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    transition: box-shadow 0.2s, transform 0.2s;
 }
 
-body.dark .service-card,
-body.dark .case-card,
-body.dark .insight-card,
-body.dark .card,
-body.dark .featured-section {
+body.dark .card {
     background-color: #1a1f29;
     border-color: #2c2f3a;
 }
 
-.service-card:hover,
-.case-card:hover,
-.insight-card:hover,
-.card:hover,
-.featured-section:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+.card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
 }
 
-.service-card h3,
-.case-card h3,
-.insight-card h3 {
-    font-size: 1.4rem;
-    font-weight: 700;
-    margin-bottom: 0.5rem;
-}
-
-.service-card p,
-.case-card p,
-.insight-card p {
-    font-size: 1rem;
-    color: #4b5563;
-}
-
-body.dark .service-card p,
-body.dark .case-card p,
-body.dark .insight-card p {
-    color: #9ca3af;
-}
-
-/* =========================
-   BUTTONS
-========================= */
-.btn,
-.btn-primary {
-    display: inline-block;
-    padding: 0.85rem 1.8rem;
-    font-weight: 700;
-    border-radius: 0.5rem;
-    text-decoration: none;
-    text-align: center;
-    transition: background-color 0.25s, color 0.25s;
-}
-
-.btn {
-    background-color: #bfa84b; /* gold accent */
-    color: #111418;
-}
-
-.btn:hover {
-    background-color: #9a8839;
-    color: #ffffff;
-}
-
-.btn-primary {
-    background-color: #137fec; /* primary blue */
-    color: #ffffff;
-}
-
-.btn-primary:hover {
-    background-color: rgba(19,127,236,0.9);
-}
-
-/* =========================
-   CALL TO ACTION (CTA)
-========================= */
-.cta {
-    text-align: center;
-    padding: 2.5rem 1rem;
-    margin: 2rem 0 1rem 0;
-    background-color: #111418;
-    color: #ffffff;
-    border-radius: 1rem;
-}
-
-.cta h2 {
-    font-size: 2rem;
-    margin-bottom: 0.75rem;
-}
-
-.cta p {
-    font-size: 1.1rem;
-}
-
-/* =========================
-   TAGS / LABELS
-========================= */
-.label-primary {
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    background-color: rgba(19,127,236,0.1);
-    color: #137fec;
-    padding: 0.15rem 0.5rem;
-    border-radius: 9999px;
-}
-
-/* =========================
-   PROFILE / AVATAR
-========================= */
+/* Rounded Profile Images */
 .size-5, .size-6, .size-8, .size-10 {
     border-radius: 9999px;
     background-size: cover;
     background-position: center;
 }
 
-/* =========================
-   INPUTS / SEARCH / EMAIL
-========================= */
+/* Tags / Labels */
+.label-primary {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    background-color: rgba(19, 127, 236, 0.1);
+    color: #137fec;
+    padding: 0.15rem 0.5rem;
+    border-radius: 9999px;
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Inter', sans-serif;
+    color: inherit;
+}
+
+h2 {
+    font-size: 2.25rem;
+    line-height: 1.2;
+    font-weight: 800;
+}
+
+h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+h4 {
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+/* Links */
+a {
+    text-decoration: none;
+    transition: color 0.2s;
+}
+a:hover {
+    color: #137fec;
+}
+
+/* Input Fields */
 input[type="text"], input[type="email"], input[type="search"] {
     border: 1px solid #d1d5db;
     border-radius: 0.5rem;
@@ -237,21 +129,18 @@ input[type="text"], input[type="email"], input[type="search"] {
     background-color: transparent;
     transition: border-color 0.2s;
 }
-
 input:focus {
     outline: none;
     border-color: #137fec;
 }
 
-/* =========================
-   FOOTER
-========================= */
+/* Footer */
 footer {
-    text-align: center;
-    padding: 3rem 1rem;
-    font-size: 0.9rem;
+    background-color: #ffffff;
     color: #6b7280;
     border-top: 1px solid #f0f2f4;
+    padding: 3rem 1.5rem;
+    text-align: center;
 }
 
 body.dark footer {
@@ -260,46 +149,34 @@ body.dark footer {
     color: #9ca3af;
 }
 
-/* =========================
-   HOVER EFFECTS / TRANSITIONS
-========================= */
-.card:hover .card-title,
-.insight-card:hover h3 {
+/* Hero / Featured Section */
+.featured-section {
+    display: flex;
+    flex-direction: column;
+    border-radius: 1rem;
+    overflow: hidden;
+    background-color: #fff;
+    border: 1px solid #f0f2f4;
+}
+
+body.dark .featured-section {
+    background-color: #1a1f29;
+    border-color: #2c2f3a;
+}
+
+/* Hover Effects for Cards */
+.card:hover .card-title {
     color: #137fec;
     transition: color 0.2s;
 }
 
-/* =========================
-   HORIZONTAL SCROLL CATEGORIES
-========================= */
+/* Horizontal Scroll Categories */
 .categories-scroll {
     display: flex;
     overflow-x: auto;
     gap: 0.5rem;
     padding-bottom: 0.5rem;
 }
-
 .categories-scroll::-webkit-scrollbar {
     display: none;
-}
-
-/* =========================
-   RESPONSIVE BREAKPOINTS
-========================= */
-@media (max-width: 768px) {
-    .hero h1 {
-        font-size: 2.4rem;
-    }
-    nav a {
-        margin: 0 0.5rem;
-    }
-}
-
-@media (max-width: 480px) {
-    html {
-        font-size: 15px;
-    }
-    .hero h1 {
-        font-size: 2rem;
-    }
 }
