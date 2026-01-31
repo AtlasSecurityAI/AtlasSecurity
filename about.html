@@ -1,56 +1,149 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>About – AtlasSecurity</title>
-    <link rel="stylesheet" href="style.css">
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>About - AtlasSECURITY</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Noto+Sans:wght@400;500;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#0052cc", 
+              "primary-dark": "#003d99",
+              "accent-blue": "#2b8cee",
+              "background-light": "#ffffff",
+              "surface-light": "#f8fafc",
+              "cool-gray": "#cbd5e1",
+              "text-main": "#0f172a",
+              "text-muted": "#64748b",
+            },
+            fontFamily: {
+              "display": ["Space Grotesk", "sans-serif"],
+              "body": ["Noto Sans", "sans-serif"],
+            },
+            boxShadow: {
+              'soft': '0 20px 40px -10px rgba(0, 50, 100, 0.1)',
+              'card': '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)',
+              'glow': '0 0 20px rgba(43, 140, 238, 0.3)',
+            }
+          },
+        },
+      }
+    </script>
+    <style>
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        ::selection {
+            background: #e0f2fe;
+            color: #0052cc;
+        }
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
 </head>
-<body>
+<body class="bg-surface-light text-text-main font-body antialiased">
+<div class="relative min-h-screen flex flex-col pb-24">
 
-    <!-- Hero Section -->
-    <header class="hero">
-        <h1>About AtlasSecurity</h1>
-        <p>Practical cybersecurity advisory led by Hashemul Khan, bridging AI, cloud, IAM, detection, and GRC into real-world outcomes.</p>
-    </header>
+    <nav class="fixed top-0 w-full z-50 glass-panel border-b border-slate-100 transition-all duration-300">
+        <div class="container mx-auto px-5">
+            <div class="relative flex items-center justify-between h-16">
+                <div class="flex items-center gap-2">
+                    <a href="index.html" class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary" style="font-size: 28px;">security</span>
+                        <h1 class="text-xl font-bold tracking-tight text-slate-900">Atlas<span class="text-primary">SECURITY</span></h1>
+                    </a>
+                </div>
+                <div class="hidden sm:flex items-center space-x-2">
+                    <a href="index.html" class="px-3 py-2 rounded-md text-sm font-medium text-slate-700 hover:bg-slate-100 hover:text-slate-900">Home</a>
+                    <a href="insights.html" class="px-3 py-2 rounded-md text-sm font-medium text-slate-700 hover:bg-slate-100 hover:text-slate-900">Insights</a>
+                    <a href="about.html" class="px-3 py-2 rounded-md text-sm font-medium text-white bg-primary">About</a>
+                    <a href="contact.html" class="px-3 py-2 rounded-md text-sm font-medium text-slate-700 hover:bg-slate-100 hover:text-slate-900">Contact</a>
+                </div>
+                <div class="sm:hidden">
+                    <button class="p-2 text-slate-600 hover:text-primary transition-colors rounded-full hover:bg-slate-50">
+                        <span class="material-symbols-outlined" style="font-size: 24px;">menu</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
 
-    <!-- About Overview -->
-    <section class="about">
-        <h2>Our Mission & Expertise</h2>
-        <p>
-            AtlasSecurity is a personal cybersecurity advisory initiative led by Hashemul Khan, a senior technical program leader
-            with over a decade of experience delivering enterprise security programs across regulated banking, healthcare,
-            and Fortune 500 environments.
-        </p>
-        <p>
-            Our focus is practical execution—ensuring AI and cloud platforms, identity management, threat detection,
-            and governance strategies are audit-ready, resilient, and aligned with real-world regulatory requirements.
-        </p>
-        <p>
-            Experience spans secure cloud adoption, audit readiness, incident response maturity, and implementing enterprise-scale
-            GRC programs.
-        </p>
-    </section>
+    <main class="flex-grow pt-16">
+        <header class="bg-gradient-to-br from-blue-50 to-white pt-24 pb-16">
+            <div class="container mx-auto px-5 text-center">
+                <h1 class="text-4xl md:text-5xl font-extrabold font-display tracking-tight text-text-main mb-4">About AtlasSecurity</h1>
+                <p class="text-lg text-text-muted max-w-3xl mx-auto">Practical cybersecurity advisory led by Hashemul Khan, bridging AI, cloud, IAM, detection, and GRC into real-world outcomes.</p>
+            </div>
+        </header>
 
-    <!-- Call to Action -->
-    <section class="cta">
-        <h2>Learn More About Our Advisory Services</h2>
-        <p>Discover how AtlasSecurity can strengthen your security posture and deliver practical outcomes.</p>
-        <a href="services.html" class="btn">Explore Advisory Services</a>
-    </section>
+        <section class="py-20">
+            <div class="container mx-auto px-5">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                    <div class="bg-white p-8 rounded-2xl shadow-soft border border-white">
+                        <div class="flex items-center gap-4 mb-4">
+                            <span class="material-symbols-outlined text-4xl text-primary">rocket_launch</span>
+                            <h2 class="text-2xl font-bold font-display text-slate-900">Our Mission</h2>
+                        </div>
+                        <p class="font-body text-text-muted">AtlasSecurity is a personal cybersecurity advisory initiative led by Hashemul Khan, a senior technical program leader with over a decade of experience delivering enterprise security programs across regulated banking, healthcare, and Fortune 500 environments.</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-2xl shadow-soft border border-white">
+                        <div class="flex items-center gap-4 mb-4">
+                            <span class="material-symbols-outlined text-4xl text-primary">verified_user</span>
+                            <h2 class="text-2xl font-bold font-display text-slate-900">Our Expertise</h2>
+                        </div>
+                        <p class="font-body text-text-muted">Our focus is practical execution—ensuring AI and cloud platforms, identity management, threat detection, and governance strategies are audit-ready, resilient, and aligned with real-world regulatory requirements. Experience spans secure cloud adoption, audit readiness, incident response maturity, and implementing enterprise-scale GRC programs.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-    <!-- Navigation -->
-    <p>
-        <a href="index.html">Home</a> |
-        <a href="services.html">Advisory Services</a> |
-        <a href="case-studies.html">Case Studies</a> |
-        <a href="insights.html">Insights</a> |
-        <a href="contact.html">Contact</a>
-    </p>
+        <section class="bg-white">
+            <div class="container mx-auto px-5 py-20 flex flex-col items-center text-center">
+                 <div class="p-4 bg-cool-gray rounded-2xl mb-6">
+                    <span class="material-symbols-outlined text-primary text-3xl">mail</span>
+                </div>
+                <h3 class="text-2xl font-bold text-slate-900 mb-3 font-display">Get in Touch</h3>
+                <p class="text-slate-500 text-sm mb-8 leading-relaxed max-w-lg">Discover how AtlasSecurity can strengthen your security posture and deliver practical outcomes.</p>
+                <a href="contact.html" class="group relative flex items-center justify-center gap-2 px-8 py-4 bg-slate-900 hover:bg-primary text-white rounded-xl font-bold transition-all duration-300 shadow-xl shadow-slate-200 overflow-hidden ring-4 ring-white/50">
+                    <span>Contact Us</span>
+                </a>
+            </div>
+        </section>
 
-    <footer>
-        <p>&copy; 2025 AtlasSecurity</p>
-    </footer>
-
+    </main>
+    
+    <nav class="fixed bottom-0 w-full z-50 bg-white/90 backdrop-blur-lg border-t border-slate-200 safe-area-bottom">
+        <div class="flex items-center justify-around px-2 py-3 pb-6 md:pb-3">
+            <a class="flex flex-col items-center gap-1 group w-16 text-slate-400 hover:text-slate-900 transition-colors" href="index.html">
+                <div class="p-1 rounded-full group-hover:bg-blue-50 transition-colors">
+                    <span class="material-symbols-outlined text-2xl">home</span>
+                </div>
+                <span class="text-[10px] font-medium">Home</span>
+            </a>
+            <a class="flex flex-col items-center gap-1 group w-16 text-slate-400 hover:text-slate-900 transition-colors" href="insights.html">
+                <div class="p-1 rounded-full group-hover:bg-blue-50 transition-colors">
+                    <span class="material-symbols-outlined text-2xl">article</span>
+                </div>
+                <span class="text-[10px] font-medium">Articles</span>
+            </a>
+            <a class="flex flex-col items-center gap-1 group w-16" href="about.html">
+                <div class="p-1 rounded-full group-hover:bg-blue-50 transition-colors">
+                    <span class="material-symbols-outlined text-2xl text-primary">info</span>
+                </div>
+                <span class="text-[10px] font-bold text-primary">About</span>
+            </a>
+        </div>
+    </nav>
+</div>
 </body>
 </html>
-
