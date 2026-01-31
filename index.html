@@ -3,9 +3,9 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>AtlasSECURITY - Home Professional</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300 ;400;500;600;700&family=Noto+Sans:wght@400;500;700&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght ,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-<script src="https://cdn.tailwindcss.com?plugins=forms ,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Noto+Sans:wght@400;500;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script>
       tailwind.config = {
         theme: {
@@ -58,11 +58,6 @@
       min-height: max(884px, 100dvh);
     }
   </style>
-<style>
-    body {
-      min-height: max(884px, 100dvh);
-    }
-  </style>
   </head>
 <body class="bg-background-light text-text-main font-display antialiased">
 <div class="relative min-h-screen flex flex-col pb-24 overflow-x-hidden">
@@ -72,25 +67,26 @@
 <span class="material-symbols-outlined text-primary" style="font-size: 28px;">security</span>
 <h1 class="text-xl font-bold tracking-tight text-slate-900">Atlas<span class="text-primary">SECURITY</span></h1>
 </div>
-<button class="absolute right-5 p-2 text-slate-600 hover:text-primary transition-colors rounded-full hover:bg-slate-50">
+<button id="menu-button" class="absolute right-5 p-2 text-slate-600 hover:text-primary transition-colors rounded-full hover:bg-slate-50">
 <span class="material-symbols-outlined" style="font-size: 24px;">menu</span>
 </button>
+<div id="menu" class="hidden absolute top-16 right-5 bg-white rounded-lg shadow-lg p-2">
+<a href="index.html" class="block px-4 py-2 text-slate-700 hover:bg-slate-100">Home</a>
+<a href="about.html" class="block px-4 py-2 text-slate-700 hover:bg-slate-100">About</a>
+<a href="insights.html" class="block px-4 py-2 text-slate-700 hover:bg-slate-100">Insights</a>
+<a href="contact.html" class="block px-4 py-2 text-slate-700 hover:bg-slate-100">Contact</a>
+</div>
 </div>
 </nav>
 <header class="relative w-full h-[720px] flex items-center justify-center overflow-hidden bg-white">
 <div class="absolute inset-0 z-0">
-<img alt="Hyper-realistic 3D glass shield with data links" class="w-full h-full object-cover opacity-100" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCGe01-kKDWvzzkPUl9tmlFwRRmSW4lAMeZkjDuSZGaULbhIRCcTsv-5MUEJgnXY8tw8UORTvvRJTi41giUXZ_4hBUK_Q74VWx-ExSDxlhcBrx2nX9FwOvfFSSwbqwJkzqUAR1vYgQnd9FwLOUjZq6qzgY_lGNC_clh8utZ9L1z3s9mnWefYykk4_mrNYapdb91lZOauENyg2iTvJkxf0qAsCtcNzoJg_FbpGNiIQRFQwwI0BTZjpZIMQj9nGWcWlamPwhfKGal_mI "/>
+<img alt="Hyper-realistic 3D glass shield with data links" class="w-full h-full object-cover opacity-100" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCGe01-kKDWvzzkPUl9tmlFwRRmSW4lAMeZkjDuSZGaULbhIRCcTsv-5MUEJgnXY8tw8UORTvvRJTi41giUXZ_4hBUK_Q74VWx-ExSDxlhcBrx2nX9FwOvfFSSwbqwJkzqUAR1vYgQnd9FwLOUjZq6qzgY_lGNC_clh8utZ9L1z3s9mnWefYykk4_mrNYapdb91lZOauENyg2iTvJkxf0qAsCtcNzoJg_FbpGNiIQRFQwwI0BTZjpZIMQj9nGWcWlamPwhfKGal_mI"/>
 <div class="absolute inset-0 bg-hero-gradient"></div>
 <div class="absolute top-1/4 right-0 w-[500px] h-[500px] bg-blue-200/30 rounded-full blur-[120px] mix-blend-overlay"></div>
 <div class="absolute bottom-0 left-0 w-[400px] h-[400px] bg-indigo-100/50 rounded-full blur-[100px] mix-blend-overlay"></div>
 </div>
 <div class="relative z-10 container px-5 flex flex-col items-center text-center mt-8">
-<button class="group flex items-center gap-3 px-6 py-2.5 mb-10 bg-white/80 backdrop-blur-md border border-white/50 rounded-full shadow-lg hover:shadow-glow hover:border-blue-200 transition-all duration-300 transform hover:-translate-y-0.5">
-<div class="flex items-center justify-center w-6 h-6 rounded-full bg-primary text-white shadow-sm">
-<span class="material-symbols-outlined text-[16px] leading-none">arrow_downward</span>
-</div>
-<span class="text-sm font-bold text-slate-800 uppercase tracking-wide group-hover:text-primary transition-colors">Future of IT Security</span>
-</button>
+
 <h2 class="text-5xl md:text-7xl font-extrabold leading-[1.05] tracking-tight mb-6 text-slate-900 drop-shadow-sm">
             AI Security <br/>
 <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary via-blue-500 to-indigo-600">Governance</span>
@@ -99,22 +95,20 @@
             Navigating the complexities of Generative AI security with next-gen defense protocols and risk assessment.
         </p>
 <div class="flex gap-4">
-<button class="group relative flex items-center justify-center gap-2 px-8 py-4 bg-slate-900 hover:bg-primary text-white rounded-xl font-bold transition-all duration-300 shadow-xl shadow-slate-200 overflow-hidden ring-4 ring-white/50">
-<span class="relative">Latest Report</span>
+<a href="about.html" class="group relative flex items-center justify-center gap-2 px-8 py-4 bg-slate-900 hover:bg-primary text-white rounded-xl font-bold transition-all duration-300 shadow-xl shadow-slate-200 overflow-hidden ring-4 ring-white/50">
+<span class="relative">Future of Technology</span>
 <span class="material-symbols-outlined relative text-sm transition-transform group-hover:translate-x-1">arrow_forward</span>
-</button>
+</a>
 </div>
 </div>
 </header>
 <section class="relative z-20 px-5 -mt-24 mb-20">
 <div class="bg-cool-gray rounded-3xl shadow-soft border border-white/50 p-8 backdrop-blur-sm">
 <div class="flex flex-col md:flex-row gap-8 md:gap-4 divide-y md:divide-y-0 md:divide-x divide-slate-400/30">
-<a class="flex-1 pt-4 first:pt-0 md:pt-0 md:px-4 group block hover:bg-white/30 rounded-xl transition-colors p-2" href="insights.html">
+<a class="flex-1 pt-4 first:pt-0 md:pt-0 md:px-4 group block hover:bg-white/30 rounded-xl transition-colors p-2" href="about.html">
 <div class="flex flex-row items-start gap-5">
 <div class="shrink-0 w-16 h-16 rounded-xl overflow-hidden shadow-lg border-2 border-white/70 group-hover:scale-105 transition-transform duration-300">
-<div class="w-full h-full bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center">
-<span class="material-symbols-outlined text-4xl text-slate-600">gavel</span>
-</div>
+<img alt="Hyper-realistic marble-like pillar 3D visual" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCk_YZbDXZLqoVBhyu1rHKo0IBTBYPclZNpiq2UTlxYYF-JAHBzqRSLTVRdfk9jOjBMRjjfv7YqRpOAq0e2nbhF0ydEhDBZgwl60ABf9tMN380pchSiyr68lkBL19_Iw-wzPS1OkTAbduVMZBT7UOb-UupiPcJUoBmVBU3evTpDyv-wxaasdbCsf0NrIYrqS-MyZCjjAiGrMqr1yWlQqEjQEa8FrxBsPBorGDr_qDV65NWjS14BgrBljcXn3h48DIwc35dFGSHEJLU"/>
 </div>
 <div>
 <h3 class="text-lg font-bold text-slate-900 mb-1 group-hover:text-primary transition-colors">Governance</h3>
@@ -122,10 +116,10 @@
 </div>
 </div>
 </a>
-<a class="flex-1 pt-8 md:pt-0 md:px-4 group block hover:bg-white/30 rounded-xl transition-colors p-2" href="insights.html">
+<a class="flex-1 pt-8 md:pt-0 md:px-4 group block hover:bg-white/30 rounded-xl transition-colors p-2" href="about.html">
 <div class="flex flex-row items-start gap-5">
 <div class="shrink-0 w-16 h-16 rounded-xl overflow-hidden shadow-lg border-2 border-white/70 group-hover:scale-105 transition-transform duration-300">
-<img alt="High-tech metallic seal 3D visual" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCXa7oJauPzzY7yqTbOvXWKi-xEoepYes79aD-KohSM95uofXxKbKF3XVGbonDBVxiQS-Vc6gS7-v2HKISrgBx0a1QMpFn64Hjm2FD4apExQ5x5W69yOSNfKdes9YNJYQMIo0ZsRC2yFS1B3hXhjIR8jtaEfKg515bRiDvPBX_DJ5BHnddatVd_UQ1Z55_RDmZcuLr4GTZxKoSuZ9PwSRMcSka2AmBmtmLVzfCaARdjpoqnXkGOqUOnh1SVPB3fJiKVJrZPkTO8p1Q "/>
+<img alt="High-tech metallic seal 3D visual" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCXa7oJauPzzY7yqTbOvXWKi-xEoepYes79aD-KohSM95uofXxKbKF3XVGbonDBVxiQS-Vc6gS7-v2HKISrgBx0a1QMpFn64Hjm2FD4apExQ5x5W69yOSNfKdes9YNJYQMIo0ZsRC2yFS1B3hXhjIR8jtaEfKg515bRiDvPBX_DJ5BHnddatVd_UQ1Z55_RDmZcuLr4GTZxKoSuZ9PwSRMcSka2AmBmtmLVzfCaARdjpoqnXkGOqUOnh1SVPB3fJiKVJrZPkTO8p1Q"/>
 </div>
 <div>
 <h3 class="text-lg font-bold text-slate-900 mb-1 group-hover:text-primary transition-colors">Compliance</h3>
@@ -133,10 +127,10 @@
 </div>
 </div>
 </a>
-<a class="flex-1 pt-8 md:pt-0 md:px-4 group block hover:bg-white/30 rounded-xl transition-colors p-2" href="insights.html">
+<a class="flex-1 pt-8 md:pt-0 md:px-4 group block hover:bg-white/30 rounded-xl transition-colors p-2" href="about.html">
 <div class="flex flex-row items-start gap-5">
 <div class="shrink-0 w-16 h-16 rounded-xl overflow-hidden shadow-lg border-2 border-white/70 group-hover:scale-105 transition-transform duration-300">
-<img alt="Glowing neural-synapse brain 3D visual" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCoIZNdxVAAbvSCX2D8WEFrJfAF60-GwC1B8xeRPfRbi1fGrxrNfOIeWx2lG5wD3azRobO4AmP7iyaP3bggHf7kigwaFtCKMBaCkoPAJJ8zQxhSCXTXNI-hZFI08ZoQWu12gavuoASh_GDwtajcGmkh0qmnqyGfCznB_0Dlpyq3gJOqZBmDRBS1wq4jNKGoSfkkZ5Lum_HQN6KU_ETfzvcTa4t4b5BFGziFXoDjAXA3VQ-M2UukJeTxowkt3uH9xkOaalT6mblJGxQ "/>
+<img alt="Glowing neural-synapse brain 3D visual" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCoIZNdxVAAbvSCX2D8WEFrJfAF60-GwC1B8xeRPfRbi1fGrxrNfOIeWx2lG5wD3azRobO4AmP7iyaP3bggHf7kigwaFtCKMBaCkoPAJJ8zQxhSCXTXNI-hZFI08ZoQWu12gavuoASh_GDwtajcGmkh0qmnqyGfCznB_0Dlpyq3gJOqZBmDRBS1wq4jNKGoSfkkZ5Lum_HQN6KU_ETfzvcTa4t4b5BFGziFXoDjAXA3VQ-M2UukJeTxowkt3uH9xkOaalT6mblJGxQ"/>
 </div>
 <div>
 <h3 class="text-lg font-bold text-slate-900 mb-1 group-hover:text-primary transition-colors">AI Security</h3>
@@ -150,13 +144,14 @@
 <section class="w-full bg-cool-gray py-20 mb-0">
 <div class="px-5">
 <div class="flex flex-col items-center justify-center mb-12 text-center">
-<span class="text-primary font-bold text-xs tracking-widest uppercase mb-3 bg-white px-3 py-1 rounded-full border border-blue-100 shadow-sm">Updates</span>
-<h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">Security Insights</h2>
+<a href="insights.html">
+<h2 class="text-3xl font-extrabold text-slate-900 tracking-tight mb-3 bg-white px-3 py-1 rounded-full border border-blue-100 shadow-sm">Security Updates</h2>
+</a>
 </div>
 <div class="flex flex-col gap-8 max-w-lg mx-auto">
 <article class="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col border border-white">
 <div class="relative h-60 w-full overflow-hidden">
-<img alt="Abstract blue data waves visualization" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHWux8iAKCKWnCwFSlJCTo97_H4beCb-gemOkvwghR12h9nLkX68vtl037ki-OXLCK42xfr8l3mdbtrEI4f3AxbbWU6JfMT-y4crb9AQ5OvyMsKDtwbCxP_n4YX95Jl69KPm4jQ_gnC1ughgUwfZzyM5qUeyI0csJ54a6Kx2YjVopSf9NaWOz6GOpsYYdEmj_Jq0mzz9jHFoWyGHKDFlngkeXTl_Wrwzy2REyVlksgjBAgGYxneMQ4ZTmXvlJK1O-v_JNQMQovCLA "/>
+<img alt="Abstract blue data waves visualization" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHWux8iAKCKWnCwFSlJCTo97_H4beCb-gemOkvwghR12h9nLkX68vtl037ki-OXLCK42xfr8l3mdbtrEI4f3AxbbWU6JfMT-y4crb9AQ5OvyMsKDtwbCxP_n4YX95Jl69KPm4jQ_gnC1ughgUwfZzyM5qUeyI0csJ54a6Kx2YjVopSf9NaWOz6GOpsYYdEmj_Jq0mzz9jHFoWyGHKDFlngkeXTl_Wrwzy2REyVlksgjBAgGYxneMQ4ZTmXvlJK1O-v_JNQMQovCLA"/>
 <div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent opacity-80"></div>
 <div class="absolute top-4 left-4">
 <span class="px-3 py-1 bg-white/95 backdrop-blur-sm text-xs font-bold text-slate-900 rounded-md shadow-sm uppercase tracking-wider">Red Teaming</span>
@@ -169,9 +164,9 @@
 <span>5 min read</span>
 </div>
 <h3 class="text-2xl font-bold text-slate-900 leading-tight mb-3 group-hover:text-primary transition-colors">The State of LLM Red Teaming 2024</h3>
-<p class="text-slate-500 text-sm leading-relaxed mb-6 line-clamp-2">Essential strategies for securing large language models against adversarial attacks and prompt injections in enterprise environments.</p>
-<div class="mt-auto pt-5 border-t border-slate-50 flex items-center justify-end">
-<button class="text-slate-400 hover:text-primary transition-colors">
+<div class="flex items-center mt-auto pt-5 border-t border-slate-50">
+<p class="text-slate-500 text-sm leading-relaxed line-clamp-2">Essential strategies for securing large language models against adversarial attacks and prompt injections in enterprise environments.</p>
+<button class="text-slate-400 hover:text-primary transition-colors ml-auto">
 <span class="material-symbols-outlined">arrow_forward</span>
 </button>
 </div>
@@ -179,7 +174,7 @@
 </article>
 <article class="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col border border-white">
 <div class="relative h-60 w-full overflow-hidden">
-<img alt="Abstract AI brain network connection nodes" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuASC8mfsSJsPCjvG8qKZJSDguNJZi4cy4Q1G5Kx1DBnDU2EQDdU55pL9PxrwS2YMncBeP-5t456dJ8O45Oc5WQ7wC9BR9fK7MlVg6m6g-6c3hJ6oQnle8_-lkX_ZyVPnD11nWFBynfHs2A6rsPJ73BWCyFOtl0K0fjQfz1XVXhjDuJzhmo6zOafMHyIeD1dxPKvTPEbqv13iiDhNIJMS7WB-KSB8hBj8tf9kArJfaBArd6Mryj4-lKQTUpbLk98-FwaPG4xHrgphkQ "/>
+<img alt="Abstract AI brain network connection nodes" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuASC8mfsSJsPCjvG8qKZJSDguNJZi4cy4Q1G5Kx1DBnDU2EQDdU55pL9PxrwS2YMncBeP-5t456dJ8O45Oc5WQ7wC9BR9fK7MlVg6m6g-6c3hJ6oQnle8_-lkX_ZyVPnD11nWFBynfHs2A6rsPJ73BWCyFOtl0K0fjQfz1XVXhjDuJzhmo6zOafMHyIeD1dxPKvTPEbqv13iiDhNIJMS7WB-KSB8hBj8tf9kArJfaBArd6Mryj4-lKQTUpbLk98-FwaPG4xHrgphkQ"/>
 <div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent opacity-80"></div>
 <div class="absolute top-4 left-4">
 <span class="px-3 py-1 bg-white/95 backdrop-blur-sm text-xs font-bold text-slate-900 rounded-md shadow-sm uppercase tracking-wider">Compliance</span>
@@ -192,9 +187,9 @@
 <span>8 min read</span>
 </div>
 <h3 class="text-2xl font-bold text-slate-900 leading-tight mb-3 group-hover:text-primary transition-colors">GDPR in the Age of Agents</h3>
-<p class="text-slate-500 text-sm leading-relaxed mb-6 line-clamp-2">How autonomous AI agents challenge current data privacy regulations and what legal teams need to prepare for.</p>
-<div class="mt-auto pt-5 border-t border-slate-50 flex items-center justify-end">
-<button class="text-slate-400 hover:text-primary transition-colors">
+<div class="flex items-center mt-auto pt-5 border-t border-slate-50">
+<p class="text-slate-500 text-sm leading-relaxed line-clamp-2">How autonomous AI agents challenge current data privacy regulations and what legal teams need to prepare for.</p>
+<button class="text-slate-400 hover:text-primary transition-colors ml-auto">
 <span class="material-symbols-outlined">arrow_forward</span>
 </button>
 </div>
@@ -227,16 +222,10 @@
 <nav class="fixed bottom-0 w-full z-50 bg-white/90 backdrop-blur-lg border-t border-slate-200 safe-area-bottom">
 <div class="flex items-center justify-around px-2 py-3 pb-6 md:pb-3">
 <a class="flex flex-col items-center gap-1 group w-16" href="index.html">
-<div class="p-1 rounded-full group-hover:bg-blue-50 transition-colors">
+<div class="p-1 rounded-full bg-blue-50 transition-colors">
 <span class="material-symbols-outlined text-2xl text-primary">home</span>
 </div>
-<span class="text-[10px] font-bold text-primary">Home</span>
-</a>
-<a class="flex flex-col items-center gap-1 group w-16 text-slate-400 hover:text-slate-900 transition-colors" href="insights.html">
-<div class="p-1 rounded-full group-hover:bg-slate-50 transition-colors">
-<span class="material-symbols-outlined text-2xl">article</span>
-</div>
-<span class="text-[10px] font-medium">Articles</span>
+<span class="text-[10px] font-bold text-primary">AtlasSecurity</span>
 </a>
 <a class="flex flex-col items-center gap-1 group w-16 text-slate-400 hover:text-slate-900 transition-colors" href="about.html">
 <div class="p-1 rounded-full group-hover:bg-slate-50 transition-colors">
@@ -244,7 +233,27 @@
 </div>
 <span class="text-[10px] font-medium">About</span>
 </a>
+<a class="flex flex-col items-center gap-1 group w-16 text-slate-400 hover:text-slate-900 transition-colors" href="insights.html">
+<div class="p-1 rounded-full group-hover:bg-slate-50 transition-colors">
+<span class="material-symbols-outlined text-2xl">article</span>
+</div>
+<span class="text-[10px] font-medium">Sec Updates</span>
+</a>
+<a class="flex flex-col items-center gap-1 group w-16 text-slate-400 hover:text-slate-900 transition-colors" href="contact.html">
+<div class="p-1 rounded-full group-hover:bg-slate-50 transition-colors">
+<span class="material-symbols-outlined text-2xl">mail</span>
+</div>
+<span class="text-[10px] font-medium">Contact</span>
+</a>
 </div>
 </nav>
 </div>
+<script>
+    const menuButton = document.getElementById('menu-button');
+    const menu = document.getElementById('menu');
+
+    menuButton.addEventListener('click', () => {
+        menu.classList.toggle('hidden');
+    });
+</script>
 </body></html>
