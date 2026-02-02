@@ -49,6 +49,7 @@
         body {
             min-height: max(884px, 100dvh);
         }
+        html { scroll-behavior: smooth; scroll-padding-top: 100px; }
     </style>
 </head>
 <body class="bg-surface-light text-text-main font-body antialiased">
@@ -67,7 +68,6 @@
 <a href="index.html" class="block px-4 py-2 text-slate-700 hover:bg-slate-100">Home</a>
 <a href="about.html" class="block px-4 py-2 text-slate-700 hover:bg-slate-100">About</a>
 <a href="insights.html" class="block px-4 py-2 text-slate-700 hover:bg-slate-100">Insights</a>
-<a href="contact.html" class="block px-4 py-2 text-slate-700 hover:bg-slate-100">Contact</a>
 </div>
 </div>
 </nav>
@@ -134,16 +134,61 @@
             </div>
         </section>
 
-        <section class="bg-white">
-            <div class="container mx-auto px-5 py-20 flex flex-col items-center text-center">
-                 <div class="p-4 bg-cool-gray rounded-2xl mb-6">
-                    <span class="material-symbols-outlined text-primary text-3xl">mail</span>
+        <section id="contact" class="py-20 mb-12">
+            <div class="container mx-auto px-5">
+                <div class="bg-cool-gray rounded-2xl p-10 shadow-soft">
+                    <h2 class="text-3xl font-bold font-display mb-8 text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent-blue">Connect With Us</h2>
+                    <div class="flex flex-col gap-8">
+                        <div class="bg-white p-8 rounded-2xl shadow-lg border border-white/50 w-full max-w-3xl mx-auto">
+                            <form class="space-y-6">
+                                <div>
+                                    <label for="name" class="block text-sm font-medium text-text-main mb-2">Full Name</label>
+                                    <input type="text" id="name" class="w-full md:max-w-lg px-4 py-3 bg-white border border-gray-200 rounded-2xl text-text-main placeholder-slate-400 shadow-soft focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all" placeholder="Your Name">
+                                </div>
+                                <div>
+                                    <label for="email" class="block text-sm font-medium text-text-main mb-2">Email Address</label>
+                                    <input type="email" id="email" class="w-full md:max-w-lg px-4 py-3 bg-white border border-gray-200 rounded-2xl text-text-main placeholder-slate-400 shadow-soft focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all" placeholder="you@example.com">
+                                </div>
+                                <div>
+                                    <label for="message" class="block text-sm font-medium text-text-main mb-2">Message</label>
+                                    <textarea id="message" rows="4" class="w-full md:max-w-lg px-4 py-3 bg-white border border-gray-200 rounded-2xl text-text-main placeholder-slate-400 shadow-soft focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all" placeholder="How can we help?"></textarea>
+                                </div>
+                                <button type="button" class="w-full px-6 py-4 bg-[#0052cc] hover:bg-[#003d99] text-white font-bold rounded-xl shadow-lg shadow-blue-500/20 transition-all duration-300">
+                                    Send Message
+                                </button>
+                            </form>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div class="bg-white p-6 rounded-2xl shadow-card flex items-center gap-5 border border-white/50">
+                                <div class="flex-shrink-0 w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-2xl text-primary">mail</span>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-lg text-text-main">Email</h3>
+                                    <p class="text-text-main text-sm"><a href="mailto:hello@atlassecurity.com" class="hover:text-primary transition-colors">hello@atlassecurity.com</a></p>
+                                </div>
+                            </div>
+                            <div class="bg-white p-6 rounded-2xl shadow-card flex items-center gap-5 border border-white/50">
+                                <div class="flex-shrink-0 w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-2xl text-primary">link</span>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-lg text-text-main">LinkedIn</h3>
+                                    <p class="text-text-main text-sm"><a href="https://www.linkedin.com/in/hashemulkhan" target="_blank" class="hover:text-primary transition-colors">linkedin.com/in/hashemulkhan</a></p>
+                                </div>
+                            </div>
+                            <div class="bg-white p-6 rounded-2xl shadow-card flex items-center gap-5 border border-white/50">
+                                <div class="flex-shrink-0 w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-2xl text-primary">call</span>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-lg text-text-main">Phone</h3>
+                                    <p class="text-text-main text-sm">+1 (XXX) XXX-XXXX</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <h3 class="text-2xl font-bold text-slate-900 mb-3 font-display">Get in Touch</h3>
-                <p class="text-slate-500 text-sm mb-8 leading-relaxed max-w-lg">Discover how AtlasSecurity can strengthen your security posture and deliver practical outcomes.</p>
-                <a href="contact.html" class="group relative flex items-center justify-center gap-2 px-8 py-4 bg-slate-900 hover:bg-primary text-white rounded-xl font-bold transition-all duration-300 shadow-xl shadow-slate-200 overflow-hidden ring-4 ring-white/50">
-                    <span>Contact Us</span>
-                </a>
             </div>
         </section>
 
@@ -151,29 +196,23 @@
     
     <nav class="fixed bottom-0 w-full z-50 bg-white/90 backdrop-blur-lg border-t border-slate-200 safe-area-bottom">
 <div class="flex items-center justify-around px-2 py-3 pb-6 md:pb-3">
-<a class="flex flex-col items-center gap-1 group w-16" href="index.html">
-<div class="p-1 rounded-full bg-blue-50 transition-colors">
-<span class="material-symbols-outlined text-2xl text-primary">home</span>
-</div>
-<span class="text-[10px] font-bold text-primary">AtlasSecurity</span>
-</a>
-<a class="flex flex-col items-center gap-1 group w-16 text-slate-400 hover:text-slate-900 transition-colors" href="about.html">
+<a class="flex flex-col items-center gap-1 group w-16 text-slate-400 hover:text-slate-900 transition-colors" href="index.html">
 <div class="p-1 rounded-full group-hover:bg-slate-50 transition-colors">
-<span class="material-symbols-outlined text-2xl">info</span>
+<span class="material-symbols-outlined text-2xl">home</span>
 </div>
-<span class="text-[10px] font-medium">About</span>
+<span class="text-[10px] font-medium">AtlasSecurity</span>
+</a>
+<a class="flex flex-col items-center gap-1 group w-16" href="about.html">
+<div class="p-1 rounded-full bg-blue-50 transition-colors">
+<span class="material-symbols-outlined text-2xl text-primary">info</span>
+</div>
+<span class="text-[10px] font-bold text-primary">About</span>
 </a>
 <a class="flex flex-col items-center gap-1 group w-16 text-slate-400 hover:text-slate-900 transition-colors" href="insights.html">
 <div class="p-1 rounded-full group-hover:bg-slate-50 transition-colors">
 <span class="material-symbols-outlined text-2xl">article</span>
 </div>
 <span class="text-[10px] font-medium whitespace-nowrap text-center">Tech Updates</span>
-</a>
-<a class="flex flex-col items-center gap-1 group w-16 text-slate-400 hover:text-slate-900 transition-colors" href="contact.html">
-<div class="p-1 rounded-full group-hover:bg-slate-50 transition-colors">
-<span class="material-symbols-outlined text-2xl">mail</span>
-</div>
-<span class="text-[10px] font-medium">Contact</span>
 </a>
 </div>
 </nav>
