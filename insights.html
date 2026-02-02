@@ -49,6 +49,7 @@
         body {
             min-height: max(884px, 100dvh);
         }
+        html { scroll-behavior: smooth; scroll-padding-top: 100px; }
     </style>
 </head>
 <body class="bg-surface-light text-text-main font-body antialiased">
@@ -79,12 +80,82 @@
             </div>
         </header>
 
+        <section id="tech-insights" class="py-20 mb-12 scroll-mt-24">
+            <div class="container mx-auto px-5 text-center">
+                <div class="flex flex-col md:flex-row justify-between items-center mb-10 max-w-4xl mx-auto">
+                    <a href="index.html" class="text-slate-500 hover:text-primary transition-colors flex items-center gap-2 text-sm font-bold mb-4 md:mb-0">
+                        <span class="material-symbols-outlined text-lg">arrow_back</span> Back to Home
+                    </a>
+                    <span class="text-slate-400 text-sm font-medium uppercase tracking-wider">Atlas Tech Insights</span>
+                </div>
+
+                <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight mb-4 font-display">Tech Insights</h2>
+                <p class="text-lg text-text-muted max-w-3xl mx-auto">Latest analysis and research on AI security, compliance, and risk management</p>
+                
+                <div class="mt-8 flex flex-wrap justify-center gap-3 text-sm font-medium text-slate-600">
+                    <span class="text-slate-400 self-center">On this page:</span>
+                    <a href="#article-llm-red-teaming" class="hover:text-primary transition-colors bg-white px-4 py-2 rounded-full shadow-sm border border-slate-200 hover:border-primary">LLM Red Teaming</a>
+                    <a href="#article-gdpr-agents" class="hover:text-primary transition-colors bg-white px-4 py-2 rounded-full shadow-sm border border-slate-200 hover:border-primary">GDPR Agents</a>
+                </div>
+
+                <div class="mt-16 text-left max-w-4xl mx-auto space-y-12">
+                    
+                    <!-- Article 1: LLM Red Teaming -->
+                    <article id="article-llm-red-teaming" class="bg-white rounded-2xl p-8 md:p-12 shadow-soft border border-slate-100 scroll-mt-32">
+                        <div class="flex flex-wrap items-center gap-3 text-sm font-bold text-slate-400 mb-6 uppercase tracking-wide">
+                            <span class="text-primary bg-blue-50 px-3 py-1 rounded-full">Red Teaming</span>
+                            <span>May 15, 2024</span>
+                            <span>•</span>
+                            <span>5 min read</span>
+                        </div>
+                        <h3 class="text-3xl md:text-4xl font-bold font-display text-slate-900 mb-6">The State of LLM Red Teaming 2024</h3>
+                        <div class="prose prose-lg text-slate-600 max-w-none">
+                            <p class="mb-6 leading-relaxed">Essential strategies for securing large language models against adversarial attacks and prompt injections in enterprise environments. As organizations race to adopt Generative AI, the attack surface expands significantly beyond traditional software vulnerabilities.</p>
+                            <h4 class="text-xl font-bold text-slate-900 mb-3">Evolving Threat Landscape</h4>
+                            <p class="mb-6 leading-relaxed">Traditional penetration testing methodologies fall short when dealing with the non-deterministic outputs of LLMs. Modern red teaming must now encompass prompt engineering, jailbreaking attempts, model extraction attacks, and training data poisoning.</p>
+                            <h4 class="text-xl font-bold text-slate-900 mb-3">Strategic Mitigation</h4>
+                            <p class="leading-relaxed">Implementing guardrails at both the input and output layers is crucial. This includes semantic analysis of prompts to detect malicious intent and verification of generated content against corporate safety policies before it reaches the end-user.</p>
+                        </div>
+                        <div class="mt-8 pt-6 border-t border-slate-100 flex justify-end">
+                            <a href="#tech-insights" class="text-primary font-bold hover:text-primary-dark transition-colors flex items-center gap-2 text-sm">
+                                <span class="material-symbols-outlined text-lg">arrow_upward</span> Back to top
+                            </a>
+                        </div>
+                    </article>
+
+                    <!-- Article 2: GDPR Agents -->
+                    <article id="article-gdpr-agents" class="bg-white rounded-2xl p-8 md:p-12 shadow-soft border border-slate-100 scroll-mt-32">
+                        <div class="flex flex-wrap items-center gap-3 text-sm font-bold text-slate-400 mb-6 uppercase tracking-wide">
+                            <span class="text-primary bg-blue-50 px-3 py-1 rounded-full">Compliance</span>
+                            <span>May 10, 2024</span>
+                            <span>•</span>
+                            <span>8 min read</span>
+                        </div>
+                        <h3 class="text-3xl md:text-4xl font-bold font-display text-slate-900 mb-6">GDPR in the Age of Agents</h3>
+                        <div class="prose prose-lg text-slate-600 max-w-none">
+                            <p class="mb-6 leading-relaxed">How autonomous AI agents challenge current data privacy regulations and what legal teams need to prepare for. The shift from passive tools to active agents introduces new complexities in data controlling and processing roles.</p>
+                            <h4 class="text-xl font-bold text-slate-900 mb-3">Autonomous Decision Making</h4>
+                            <p class="mb-6 leading-relaxed">Under GDPR Article 22, individuals have the right not to be subject to a decision based solely on automated processing. AI agents that autonomously execute tasks—such as booking flights or managing finances—blur the lines of accountability and consent.</p>
+                            <h4 class="text-xl font-bold text-slate-900 mb-3">Data Minimization Challenges</h4>
+                            <p class="leading-relaxed">Agents often require vast context windows to function effectively. Ensuring these agents adhere to data minimization principles while maintaining performance requires a new architectural approach to memory management and context retrieval.</p>
+                        </div>
+                        <div class="mt-8 pt-6 border-t border-slate-100 flex justify-end">
+                            <a href="#tech-insights" class="text-primary font-bold hover:text-primary-dark transition-colors flex items-center gap-2 text-sm">
+                                <span class="material-symbols-outlined text-lg">arrow_upward</span> Back to top
+                            </a>
+                        </div>
+                    </article>
+
+                </div>
+            </div>
+        </section>
+
         <section class="py-20">
             <div class="container mx-auto px-5">
                 <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight text-center mb-12 font-display">Latest Articles & Summaries</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
 
-                    <div class="group bg-white rounded-2xl overflow-hidden shadow-card hover:shadow-soft transition-all duration-300 flex flex-col border border-white">
+                    <div id="article-ai-risk-frameworks" class="group bg-white rounded-2xl overflow-hidden shadow-card hover:shadow-soft transition-all duration-300 flex flex-col border border-white scroll-mt-32">
                         <div class="p-7 flex flex-col flex-grow">
                             <h3 class="text-2xl font-bold font-display text-slate-900 leading-tight mb-3 group-hover:text-primary transition-colors">AI Risk Management Frameworks</h3>
                             <p class="text-slate-500 text-sm font-body leading-relaxed mb-6">Key approaches for assessing and mitigating AI model risks in enterprise environments.</p>
@@ -94,7 +165,7 @@
                         </div>
                     </div>
 
-                    <div class="group bg-white rounded-2xl overflow-hidden shadow-card hover:shadow-soft transition-all duration-300 flex flex-col border border-white">
+                    <div id="article-cloud-security" class="group bg-white rounded-2xl overflow-hidden shadow-card hover:shadow-soft transition-all duration-300 flex flex-col border border-white scroll-mt-32">
                         <div class="p-7 flex flex-col flex-grow">
                             <h3 class="text-2xl font-bold font-display text-slate-900 leading-tight mb-3 group-hover:text-primary transition-colors">Cloud Security Best Practices</h3>
                             <p class="text-slate-500 text-sm font-body leading-relaxed mb-6">Practical strategies to implement zero-trust, IAM, and SIEM integrations for secure cloud adoption.</p>
