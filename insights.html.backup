@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Insights - AtlasSECURITY</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Noto+Sans:wght@400;500;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#0052cc", 
+              "primary-dark": "#003d99",
+              "accent-blue": "#2b8cee",
+              "background-light": "#ffffff",
+              "surface-light": "#f8fafc",
+              "cool-gray": "#cbd5e1",
+              "text-main": "#0f172a",
+              "text-muted": "#64748b",
+            },
+            fontFamily: {
+              "display": ["Space Grotesk", "sans-serif"],
+              "body": ["Noto Sans", "sans-serif"],
+            },
+            boxShadow: {
+              'soft': '0 20px 40px -10px rgba(0, 50, 100, 0.1)',
+              'card': '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)',
+              'glow': '0 0 20px rgba(43, 140, 238, 0.3)',
+            }
+          },
+        },
+      }
+    </script>
+    <style>
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .hover-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .hover-card:hover { transform: translateY(-4px); box-shadow: 0 10px 40px -10px rgba(79, 70, 229, 0.2); }
+        ::selection {
+            background: #e0f2fe;
+            color: #0052cc;
+        }
+        body {
+            min-height: max(884px, 100dvh);
+        }
+        html { scroll-behavior: smooth; scroll-padding-top: 100px; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-200 font-body antialiased">
+    <!-- Fixed Background -->
+    <div class="fixed inset-0 z-[-1]">
+        <div class="absolute inset-0 bg-slate-950/90 z-10"></div>
+        <img src="images/circuit-bg.jpg" alt="" class="w-full h-full object-cover opacity-20 mix-blend-overlay z-0">
+    </div>
+
+<div class="relative min-h-screen flex flex-col pb-24">
+
+    <nav class="fixed top-0 w-full z-50 glass-panel border-b border-white/10 transition-all duration-300">
+<div class="relative flex items-center justify-center px-5 py-4">
+<a href="index.html" class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" style="font-size: 28px;">security</span>
+<h1 class="text-xl font-bold tracking-tight text-white">Atlas<span class="text-primary">SECURITY</span></h1>
+</a>
+<button id="menu-button" class="absolute right-5 p-2 text-slate-400 hover:text-primary transition-colors rounded-full hover:bg-white/10">
+<span class="material-symbols-outlined" style="font-size: 24px;">menu</span>
+</button>
+<div id="menu" class="hidden absolute top-16 right-5 bg-white rounded-lg shadow-lg p-2">
+<a href="index.html" class="block px-4 py-2 text-slate-700 hover:bg-slate-100">Home</a>
+<a href="about.html" class="block px-4 py-2 text-slate-700 hover:bg-slate-100">About</a>
+<a href="insights.html" class="block px-4 py-2 text-slate-700 hover:bg-slate-100">Insights</a>
+</div>
+</div>
+</nav>
+
+    <main class="flex-grow pt-16">
+        <header class="pt-24 pb-16">
+            <div class="container mx-auto px-5 text-center">
+                <h1 class="text-7xl md:text-8xl font-bold font-display tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-blue-500 to-cyan-400 mb-4 pt-12 pb-4">Insights</h1>
+                <p class="text-lg text-indigo-200 max-w-3xl mx-auto">Intelligence & Analysis on AI, Cloud, and Compliance</p>
+            </div>
+        </header>
+
+        <div class="flex justify-center mx-4 mb-12">
+            <div class="bg-slate-900/80 backdrop-blur border border-white/10 rounded-2xl p-2 flex flex-wrap justify-center gap-2">
+                <button class="bg-indigo-600 text-white rounded-full px-4 py-1.5 text-sm font-medium transition-colors">ALL</button>
+                <button class="bg-transparent border border-white/20 text-gray-300 hover:bg-white/10 hover:text-white rounded-full px-4 py-1.5 text-sm font-medium transition-colors">LLM Red Teaming</button>
+                <button class="bg-transparent border border-white/20 text-gray-300 hover:bg-white/10 hover:text-white rounded-full px-4 py-1.5 text-sm font-medium transition-colors">GDPR Agents</button>
+                <button class="bg-transparent border border-white/20 text-gray-300 hover:bg-white/10 hover:text-white rounded-full px-4 py-1.5 text-sm font-medium transition-colors">AI Risk Management</button>
+                <button class="bg-transparent border border-white/20 text-gray-300 hover:bg-white/10 hover:text-white rounded-full px-4 py-1.5 text-sm font-medium transition-colors">Cloud Security</button>
+            </div>
+        </div>
+
+        <section id="tech-insights" class="py-20 mb-12 scroll-mt-24">
+            <div class="container mx-auto px-5 text-center">
+                <div class="flex flex-col md:flex-row justify-between items-center mb-10 max-w-4xl mx-auto">
+                    <a href="index.html" class="text-slate-400 hover:text-primary transition-colors flex items-center gap-2 text-sm font-bold mb-4 md:mb-0">
+                        <span class="material-symbols-outlined text-lg">arrow_back</span> Back to Home
+                    </a>
+                    <span class="text-slate-400 text-sm font-medium uppercase tracking-wider">Atlas Tech Insights</span>
+                </div>
+
+                <h2 class="text-3xl font-extrabold text-white tracking-tight mb-4 font-display">Tech Insights</h2>
+                <p class="text-lg text-slate-400 max-w-3xl mx-auto">Latest analysis and research on AI security, compliance, and risk management</p>
+                
+                <div class="mt-8 flex flex-wrap justify-center gap-3 text-sm font-medium text-slate-400">
+                    <span class="text-slate-400 self-center">On this page:</span>
+                    <a href="#article-llm-red-teaming" class="hover:text-primary transition-colors bg-white/10 px-4 py-2 rounded-full shadow-sm border border-white/10 hover:border-primary text-slate-200">LLM Red Teaming</a>
+                    <a href="#article-gdpr-agents" class="hover:text-primary transition-colors bg-white/10 px-4 py-2 rounded-full shadow-sm border border-white/10 hover:border-primary text-slate-200">GDPR Agents</a>
+                </div>
+
+                <div class="mt-16 text-left max-w-4xl mx-auto space-y-12">
+                    
+                    <!-- Article 1: LLM Red Teaming -->
+                    <article id="article-llm-red-teaming" class="bg-slate-900/40 backdrop-blur-md rounded-2xl p-8 md:p-12 shadow-lg border border-white/10 scroll-mt-32 hover-card">
+                        <div class="flex flex-wrap items-center gap-3 text-sm font-bold text-slate-400 mb-6 uppercase tracking-wide">
+                            <span class="text-primary bg-blue-50 px-3 py-1 rounded-full">Red Teaming</span>
+                            <span>May 15, 2024</span>
+                            <span>•</span>
+                            <span>5 min read</span>
+                        </div>
+                        <h3 class="text-3xl md:text-4xl font-bold font-display text-white mb-6">The State of LLM Red Teaming 2024</h3>
+                        <div class="prose prose-lg text-slate-300 max-w-none">
+                            <p class="mb-6 leading-relaxed">Essential strategies for securing large language models against adversarial attacks and prompt injections in enterprise environments. As organizations race to adopt Generative AI, the attack surface expands significantly beyond traditional software vulnerabilities.</p>
+                            <h4 class="text-xl font-bold text-white mb-3">Evolving Threat Landscape</h4>
+                            <p class="mb-6 leading-relaxed">Traditional penetration testing methodologies fall short when dealing with the non-deterministic outputs of LLMs. Modern red teaming must now encompass prompt engineering, jailbreaking attempts, model extraction attacks, and training data poisoning.</p>
+                            <h4 class="text-xl font-bold text-white mb-3">Strategic Mitigation</h4>
+                            <p class="leading-relaxed">Implementing guardrails at both the input and output layers is crucial. This includes semantic analysis of prompts to detect malicious intent and verification of generated content against corporate safety policies before it reaches the end-user.</p>
+                        </div>
+                        <div class="mt-8 pt-6 border-t border-white/10 flex justify-end">
+                            <a href="#tech-insights" class="text-primary font-bold hover:text-primary-dark transition-colors flex items-center gap-2 text-sm">
+                                <span class="material-symbols-outlined text-lg">arrow_upward</span> Back to top
+                            </a>
+                        </div>
+                    </article>
+
+                    <!-- Article 2: GDPR Agents -->
+                    <article id="article-gdpr-agents" class="bg-slate-900/40 backdrop-blur-md rounded-2xl p-8 md:p-12 shadow-lg border border-white/10 scroll-mt-32 hover-card">
+                        <div class="flex flex-wrap items-center gap-3 text-sm font-bold text-slate-400 mb-6 uppercase tracking-wide">
+                            <span class="text-primary bg-blue-500/10 px-3 py-1 rounded-full">Compliance</span>
+                            <span>May 10, 2024</span>
+                            <span>•</span>
+                            <span>8 min read</span>
+                        </div>
+                        <h3 class="text-3xl md:text-4xl font-bold font-display text-white mb-6">GDPR in the Age of Agents</h3>
+                        <div class="prose prose-lg text-slate-300 max-w-none">
+                            <p class="mb-6 leading-relaxed">How autonomous AI agents challenge current data privacy regulations and what legal teams need to prepare for. The shift from passive tools to active agents introduces new complexities in data controlling and processing roles.</p>
+                            <h4 class="text-xl font-bold text-white mb-3">Autonomous Decision Making</h4>
+                            <p class="mb-6 leading-relaxed">Under GDPR Article 22, individuals have the right not to be subject to a decision based solely on automated processing. AI agents that autonomously execute tasks—such as booking flights or managing finances—blur the lines of accountability and consent.</p>
+                            <h4 class="text-xl font-bold text-white mb-3">Data Minimization Challenges</h4>
+                            <p class="leading-relaxed">Agents often require vast context windows to function effectively. Ensuring these agents adhere to data minimization principles while maintaining performance requires a new architectural approach to memory management and context retrieval.</p>
+                        </div>
+                        <div class="mt-8 pt-6 border-t border-white/10 flex justify-end">
+                            <a href="#tech-insights" class="text-primary font-bold hover:text-primary-dark transition-colors flex items-center gap-2 text-sm">
+                                <span class="material-symbols-outlined text-lg">arrow_upward</span> Back to top
+                            </a>
+                        </div>
+                    </article>
+
+                </div>
+            </div>
+        </section>
+
+        <section class="py-20">
+            <div class="container mx-auto px-5">
+                <h2 class="text-3xl font-extrabold text-white tracking-tight text-center mb-12 font-display">Latest Articles & Summaries</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mx-4">
+
+                    <!-- Card 1: LLM Red Teaming -->
+                    <div class="relative h-96 rounded-3xl overflow-hidden group hover-card">
+                        <div class="absolute inset-0 bg-gradient-to-br from-purple-900/50 to-blue-900/50">
+                            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHWux8iAKCKWnCwFSlJCTo97_H4beCb-gemOkvwghR12h9nLkX68vtl037ki-OXLCK42xfr8l3mdbtrEI4f3AxbbWU6JfMT-y4crb9AQ5OvyMsKDtwbCxP_n4YX95Jl69KPm4jQ_gnC1ughgUwfZzyM5qUeyI0csJ54a6Kx2YjVopSf9NaWOz6GOpsYYdEmj_Jq0mzz9jHFoWyGHKDFlngkeXTl_Wrwzy2REyVlksgjBAgGYxneMQ4ZTmXvlJK1O-v_JNQMQovCLA" alt="LLM Red Teaming" class="w-full h-full object-cover opacity-60 mix-blend-overlay transition-transform duration-700 group-hover:scale-105">
+                        </div>
+                        <div class="absolute top-6 left-6 z-10">
+                            <span class="bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Red Teaming</span>
+                        </div>
+                        <div class="absolute bottom-0 left-0 right-0 p-6 bg-slate-900/80 backdrop-blur-md border-t border-white/10 transition-all duration-300 group-hover:bg-slate-900/90">
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="text-slate-400 text-xs font-bold uppercase">May 15, 2024</span>
+                            </div>
+                            <h3 class="text-2xl font-bold text-white mb-2 leading-tight">The State of LLM Red Teaming 2024</h3>
+                            <p class="text-slate-300 text-sm mb-4 line-clamp-2">Essential strategies for securing large language models against adversarial attacks and prompt injections in enterprise environments.</p>
+                            <a href="#article-llm-red-teaming" class="inline-flex items-center justify-center bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-bold px-4 py-2 rounded-lg transition-colors">
+                                Read More
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Card 2: GDPR Agents -->
+                    <div class="relative h-96 rounded-3xl overflow-hidden group hover-card">
+                        <div class="absolute inset-0 bg-gradient-to-br from-blue-900/50 to-cyan-900/50">
+                            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuASC8mfsSJsPCjvG8qKZJSDguNJZi4cy4Q1G5Kx1DBnDU2EQDdU55pL9PxrwS2YMncBeP-5t456dJ8O45Oc5WQ7wC9BR9fK7MlVg6m6g-6c3hJ6oQnle8_-lkX_ZyVPnD11nWFBynfHs2A6rsPJ73BWCyFOtl0K0fjQfz1XVXhjDuJzhmo6zOafMHyIeD1dxPKvTPEbqv13iiDhNIJMS7WB-KSB8hBj8tf9kArJfaBArd6Mryj4-lKQTUpbLk98-FwaPG4xHrgphkQ" alt="GDPR Agents" class="w-full h-full object-cover opacity-60 mix-blend-overlay transition-transform duration-700 group-hover:scale-105">
+                        </div>
+                        <div class="absolute top-6 left-6 z-10">
+                            <span class="bg-blue-500 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Compliance</span>
+                        </div>
+                        <div class="absolute bottom-0 left-0 right-0 p-6 bg-slate-900/80 backdrop-blur-md border-t border-white/10 transition-all duration-300 group-hover:bg-slate-900/90">
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="text-slate-400 text-xs font-bold uppercase">May 10, 2024</span>
+                            </div>
+                            <h3 class="text-2xl font-bold text-white mb-2 leading-tight">GDPR in the Age of Agents</h3>
+                            <p class="text-slate-300 text-sm mb-4 line-clamp-2">How autonomous AI agents challenge current data privacy regulations and what legal teams need to prepare for.</p>
+                            <a href="#article-gdpr-agents" class="inline-flex items-center justify-center bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-bold px-4 py-2 rounded-lg transition-colors">
+                                Read More
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Card 3: AI Risk Management -->
+                    <div class="relative h-96 rounded-3xl overflow-hidden group hover-card">
+                        <div class="absolute inset-0 bg-gradient-to-br from-purple-900/50 to-blue-900/50">
+                            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCoIZNdxVAAbvSCX2D8WEFrJfAF60-GwC1B8xeRPfRbi1fGrxrNfOIeWx2lG5wD3azRobO4AmP7iyaP3bggHf7kigwaFtCKMBaCkoPAJJ8zQxhSCXTXNI-hZFI08ZoQWu12gavuoASh_GDwtajcGmkh0qmnqyGfCznB_0Dlpyq3gJOqZBmDRBS1wq4jNKGoSfkkZ5Lum_HQN6KU_ETfzvcTa4t4b5BFGziFXoDjAXA3VQ-M2UukJeTxowkt3uH9xkOaalT6mblJGxQ" alt="AI Risk Management" class="w-full h-full object-cover opacity-60 mix-blend-overlay transition-transform duration-700 group-hover:scale-105">
+                        </div>
+                        <div class="absolute top-6 left-6 z-10">
+                            <span class="bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Red Teaming</span>
+                        </div>
+                        <div class="absolute bottom-0 left-0 right-0 p-6 bg-slate-900/80 backdrop-blur-md border-t border-white/10 transition-all duration-300 group-hover:bg-slate-900/90">
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="text-slate-400 text-xs font-bold uppercase">May 15, 2024</span>
+                            </div>
+                            <h3 class="text-2xl font-bold text-white mb-2 leading-tight">AI Risk Management Frameworks</h3>
+                            <p class="text-slate-300 text-sm mb-4 line-clamp-2">Key approaches for assessing and mitigating AI model risks in enterprise environments.</p>
+                            <a href="#article-ai-risk-frameworks" class="inline-flex items-center justify-center bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-bold px-4 py-2 rounded-lg transition-colors">
+                                Read More
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Card 4: Cloud Security -->
+                    <div class="relative h-96 rounded-3xl overflow-hidden group hover-card">
+                        <div class="absolute inset-0 bg-gradient-to-br from-blue-900/50 to-cyan-900/50">
+                            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCk_YZbDXZLqoVBhyu1rHKo0IBTBYPclZNpiq2UTlxYYF-JAHBzqRSLTVRdfk9jOjBMRjjfv7YqRpOAq0e2nbhF0ydEhDBZgwl60ABf9tMN380pchSiyr68lkBL19_Iw-wzPS1OkTAbduVMZBT7UOb-UupiPcJUoBmVBU3evTpDyv-wxaasdbCsf0NrIYrqS-MyZCjjAiGrMqr1yWlQqEjQEa8FrxBsPBorGDr_qDV65NWjS14BgrBljcXn3h48DIwc35dFGSHEJLU" alt="Cloud Security" class="w-full h-full object-cover opacity-60 mix-blend-overlay transition-transform duration-700 group-hover:scale-105">
+                        </div>
+                        <div class="absolute top-6 left-6 z-10">
+                            <span class="bg-cyan-500 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Cloud Security</span>
+                        </div>
+                        <div class="absolute bottom-0 left-0 right-0 p-6 bg-slate-900/80 backdrop-blur-md border-t border-white/10 transition-all duration-300 group-hover:bg-slate-900/90">
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="text-slate-400 text-xs font-bold uppercase">May 10, 2024</span>
+                            </div>
+                            <h3 class="text-2xl font-bold text-white mb-2 leading-tight">Cloud Security Best Practices</h3>
+                            <p class="text-slate-300 text-sm mb-4 line-clamp-2">Practical strategies to implement zero-trust, IAM, and SIEM integrations for secure cloud adoption.</p>
+                            <a href="#article-cloud-security" class="inline-flex items-center justify-center bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-bold px-4 py-2 rounded-lg transition-colors">
+                                Read More
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+
+
+        <section class="py-20">
+            <div class="container mx-auto px-5">
+                <div class="bg-slate-900/60 backdrop-blur border border-indigo-500/30 rounded-3xl p-8 mx-4 text-center">
+                    <div class="inline-flex p-3 bg-indigo-500/20 rounded-xl mb-6">
+                        <span class="material-symbols-outlined text-indigo-400 text-3xl">mail</span>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-3 font-display">Stay Ahead of Security & AI Risks</h3>
+                    <p class="text-gray-400 text-sm mb-8 leading-relaxed max-w-lg mx-auto">Subscribe or reach out to AtlasSecurity to leverage insights for stronger security decisions.</p>
+                    
+                    <form class="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto">
+                        <input type="email" placeholder="Enter your email" class="w-full px-4 py-3 bg-slate-950/50 border border-white/20 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all">
+                        <button type="button" class="w-full sm:w-auto px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl transition-colors shadow-lg shadow-indigo-500/20 whitespace-nowrap">
+                            Join Community
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+    </main>
+    
+    <nav class="fixed bottom-0 w-full z-50 bg-slate-900/90 backdrop-blur-lg border-t border-white/10 px-6 py-4 safe-area-bottom">
+        <div class="flex justify-between items-center max-w-6xl mx-auto">
+            <a href="index.html" class="flex items-center gap-2 group">
+                <span class="material-symbols-outlined text-indigo-500 group-hover:text-indigo-400 transition-colors">security</span>
+                <span class="text-white font-bold">AtlasSecurity</span>
+            </a>
+            <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="flex items-center gap-2 text-indigo-400 hover:text-indigo-300 transition-colors font-medium text-sm">
+                Scroll to Top <span class="material-symbols-outlined text-lg">arrow_upward</span>
+            </button>
+        </div>
+    </nav>
+</div>
+<script>
+    const menuButton = document.getElementById('menu-button');
+    const menu = document.getElementById('menu');
+
+    menuButton.addEventListener('click', () => {
+        menu.classList.toggle('hidden');
+    });
+</script>
+</body>
+</html>
