@@ -1,12 +1,12 @@
 ---
 title: "AtlasSecurityBlog"
 date: "2026-02-08"
-category: "cloud-security"
+categories: ["Cloud Security", "Risk"]
 read_time: "8 min"
-source: "https://www.optiv.com/insights/discover/blog/securing-sim-connected-iot-and-ot-devices-zscaler"
+source: ""
 ---
 
-### The "Invisible" Internet: Zero Trust Protecting Devices That Don't Use Wi-Fi 
+### The "Invisible" Internet: Zero Trust Protecting Devices That Don't Use Wi-Fi
 
 You probably don?t think twice about the little SIM card inside your smartphone. It?s just the chip that lets you text or look up a map when you aren?t connected to Wi-Fi. But recently, companies have started putting those same little chips into everything else?from giant factory robots to the credit card reader at your local coffee shop.
 
