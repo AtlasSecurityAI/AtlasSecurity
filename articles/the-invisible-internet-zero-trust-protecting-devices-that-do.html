@@ -27,11 +27,6 @@
     <style>
         body {
             background-color: #020617;
-            background-image: 
-                radial-gradient(at 0% 0%, rgba(49, 46, 129, 0.4) 0px, transparent 50%),
-                radial-gradient(at 100% 0%, rgba(79, 70, 229, 0.15) 0px, transparent 50%),
-                radial-gradient(at 100% 100%, rgba(29, 78, 216, 0.2) 0px, transparent 50%);
-            background-attachment: fixed;
         }
         .glass {
             background: rgba(255, 255, 255, 0.05);
@@ -41,6 +36,10 @@
     </style>
 </head>
 <body class="text-slate-100 min-h-screen font-sans">
+    <video autoplay muted loop playsinline class="fixed inset-0 w-full h-full object-cover" style="z-index: -2; filter: brightness(0.6);">
+        <source src="../images/newvid.mp4" type="video/mp4">
+    </video>
+    <div class="fixed inset-0 bg-slate-900/50 pointer-events-none" style="z-index: -1;"></div>
     
     <nav class="fixed top-0 w-full z-50 glass border-b border-white/5">
         <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
