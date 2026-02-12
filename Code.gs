@@ -22,50 +22,37 @@ function publishFullArticle() {
     body = doc.getBody();
   }
 
-  // 1. Extract Real Title and Excerpt
-  var articleData = extractArticleMetadata(body, doc.getName());
-  var title = articleData.title;
-  var excerpt = articleData.excerpt;
-  var slug = generateSlug(title);
-  var date = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "MMMM dd, yyyy");
-  var dateYMD = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "yyyy-MM-dd");
-  
-  Logger.log("Title: " + title);
-  Logger.log("Slug: " + slug);
-  Logger.log("Excerpt: " + excerpt);
-
-  // 2. Convert Content
-  var markdownContent = convertDocToMarkdown(body, articleData.startIndex);
-  var htmlContent = convertMarkdownToHTML(markdownContent); 
-
-  // 3. Generate Files
-  // A. _posts markdown file (for Jekyll/GitHub Pages)
-  var postFileName = "_posts/" + dateYMD + "-" + slug + ".md";
-  var postContent = "---\nlayout: post\ntitle: \"" + title + "\"\ndate: " + dateYMD + "\ncategories: [Cloud Security]\n---\n\n" + markdownContent;
-  
-  // B. articles/[slug].html (Standalone HTML page)
-  var articleFileName = "articles/" + slug + ".html";
-  var fullArticleHTML = generateArticleHTML(title, slug, excerpt, dateYMD, date, ["Cloud Security"], htmlContent);
-
-  // 4. Push to GitHub
-  uploadToGitHub(postFileName, postContent);
-  uploadToGitHub(articleFileName, fullArticleHTML);
-
-  // 5. Update insights.html
-  updateInsightsHTML(slug, title, excerpt, date, "cloud-security"); 
-}
-
-/**
- * Extracts title and excerpt from document content
- */
-function extractArticleMetadata(body, fallbackTitle) {
+  // Fix Error 2: Define paragraphs in scope
   var paragraphs = body.getParagraphs();
-  var title = null;
-  var excerpt = "";
   var startIndex = 0;
-  
-  // 1. Find Real Title (First Heading 1 or Title)
+  var dateStr = ""; // Fix Error 2: Declare dateStr
+
+  // 1. Extract Date (Manual Loop - Fix Error 1)
   for (var i = 0; i < paragraphs.length; i++) {
+    var text = paragraphs[i].getText().trim();
+    if (text.length > 0) {
+      // Check if text is a valid date
+      if (!isNaN(Date.parse(text))) {
+        dateStr = text;
+        startIndex = i + 1; // Start looking for title after date
+        break;
+      } else {
+        throw new Error("No publish date found on first line. Found: " + text);
+      }
+    }
+  }
+
+  if (!dateStr) throw new Error("Document is empty or no date found.");
+  
+  var parsedDate = new Date(dateStr);
+  if (isNaN(parsedDate.getTime())) {
+    throw new Error("Invalid date format found: " + dateStr);
+  }
+  var dateYMD = Utilities.formatDate(parsedDate, Session.getScriptTimeZone(), "yyyy-MM-dd");
+
+  // 2. Extract Title
+  var title = ""; // Fix Error 2: Declare title
+  for (var i = startIndex; i < paragraphs.length; i++) {
     var p = paragraphs[i];
     var text = p.getText().trim();
     var heading = p.getHeading();
@@ -78,10 +65,10 @@ function extractArticleMetadata(body, fallbackTitle) {
       }
     }
   }
-  
-  // Fallback: If no Heading 1 found, use the first non-empty paragraph if it looks like a title, otherwise doc name
+
+  // Fallback Title
   if (!title) {
-    for (var i = 0; i < paragraphs.length; i++) {
+    for (var i = startIndex; i < paragraphs.length; i++) {
       var text = paragraphs[i].getText().trim();
       if (text.length > 0) {
         title = text;
@@ -89,10 +76,14 @@ function extractArticleMetadata(body, fallbackTitle) {
         break;
       }
     }
-    if (!title) title = fallbackTitle;
+    if (!title) title = doc.getName();
   }
   
-  // 2. Find Excerpt (First Normal Paragraph after title)
+  title = fixEncoding(title);
+  var slug = generateSlug(title);
+
+  // 3. Extract Excerpt
+  var excerpt = "";
   for (var i = startIndex; i < paragraphs.length; i++) {
     var p = paragraphs[i];
     var text = p.getText().trim();
@@ -106,8 +97,44 @@ function extractArticleMetadata(body, fallbackTitle) {
       break;
     }
   }
+  excerpt = fixEncoding(excerpt);
   
-  return { title: title, excerpt: excerpt, startIndex: startIndex };
+  Logger.log("Title: " + title);
+  Logger.log("Date: " + dateStr);
+  Logger.log("Slug: " + slug);
+  Logger.log("Excerpt: " + excerpt);
+
+  // 4. Convert Content
+  var markdownContent = convertDocToMarkdown(body, startIndex);
+  var htmlContent = convertMarkdownToHTML(markdownContent); 
+
+  // 5. Generate Files
+  // A. _posts markdown file (for Jekyll/GitHub Pages)
+  var postFileName = "_posts/" + dateYMD + "-" + slug + ".md";
+  var postContent = "---\nlayout: post\ntitle: \"" + title + "\"\ndate: " + dateYMD + "\ncategories: [Cloud Security]\n---\n\n" + markdownContent;
+  
+  // B. articles/[slug].html (Standalone HTML page)
+  var articleFileName = "articles/" + slug + ".html";
+  var fullArticleHTML = generateArticleHTML(title, slug, excerpt, dateYMD, dateStr, ["Cloud Security"], htmlContent);
+
+  // 6. Push to GitHub
+  uploadToGitHub(postFileName, postContent);
+  uploadToGitHub(articleFileName, fullArticleHTML);
+
+  // 7. Update insights.html
+  updateInsightsHTML(slug, title, excerpt, dateStr, "cloud-security"); 
+}
+
+/**
+ * Fixes encoding issues where apostrophes appear as question marks
+ */
+function fixEncoding(text) {
+  if (!text) return text;
+  // Replace ? between letters (It?s -> It's)
+  text = text.replace(/([a-zA-Z])\?([a-zA-Z])/g, "$1'$2");
+  // Replace ? at start of word (?tis -> 'tis)
+  text = text.replace(/(^|\s)\?([a-zA-Z])/g, "$1'$2");
+  return text;
 }
 
 function generateSlug(text) {
@@ -126,7 +153,7 @@ function convertDocToMarkdown(body, startIndex) {
   
   for (var i = startIndex; i < paragraphs.length; i++) {
     var p = paragraphs[i];
-    var text = p.getText();
+    var text = fixEncoding(p.getText()); // Apply encoding fix
     var heading = p.getHeading();
     
     if (heading === DocumentApp.ParagraphHeading.HEADING2) {
@@ -342,20 +369,22 @@ function generateCardHTML(title, excerpt, date, readTime, category, slug, filena
   var categoryLabel = category.replace(/-/g, ' ').toUpperCase();
   
   return `
-<div id="article-${slug}" class="glass p-8 rounded-2xl group hover:border-indigo-500/40 transition-all duration-300" data-category="${category}">
-    <div class="flex items-center gap-3 mb-6">
-        <span class="${categoryClass} border text-[10px] font-black px-2.5 py-1 rounded-md uppercase tracking-tighter">${categoryLabel}</span>
-        <span class="text-slate-400 text-xs font-medium uppercase">${date}</span>
-        <span class="text-slate-600 text-xs">•</span>
-        <span class="text-slate-400 text-xs font-medium uppercase">${readTime}</span>
-    </div>
-    <h3 class="text-xl md:text-2xl font-bold mb-4 leading-tight text-white group-hover:text-blue-400 transition-colors">${title}</h3>
-    <p class="text-slate-300 text-sm leading-relaxed mb-8 line-clamp-3">
-        ${excerpt}
-    </p>
-    <a class="inline-flex items-center text-blue-400 hover:text-blue-300 text-sm font-bold uppercase tracking-widest gap-2 group/link" href="articles/${filename}">
-        Read Full Insight 
-        <span class="material-symbols-outlined text-sm group-hover/link:translate-x-1 transition-transform">arrow_forward</span>
+<div id="article-${slug}" class="bg-slate-900/90 backdrop-blur-md border border-indigo-500/20 shadow-2xl hover:border-indigo-500/40 rounded-2xl relative overflow-hidden group hover:scale-[1.02] transition-all duration-300" data-category="${category}">
+    <a href="articles/${filename}" class="block p-8 h-full">
+        <div class="flex items-center gap-3 mb-6">
+            <span class="${categoryClass} border text-[10px] font-black px-2.5 py-1 rounded-md uppercase tracking-tighter">${categoryLabel}</span>
+            <span class="text-slate-400 text-xs font-medium uppercase">${date}</span>
+            <span class="text-slate-600 text-xs">•</span>
+            <span class="text-slate-400 text-xs font-medium uppercase">${readTime}</span>
+        </div>
+        <h3 class="text-xl md:text-2xl font-bold mb-4 leading-tight text-white group-hover:text-blue-400 transition-colors">${title}</h3>
+        <p class="text-slate-300 text-sm leading-relaxed mb-8 line-clamp-3">
+            ${excerpt}
+        </p>
+        <div class="inline-flex items-center text-blue-400 hover:text-blue-300 text-sm font-bold uppercase tracking-widest gap-2 group/link">
+            Read Full Insight 
+            <span class="material-symbols-outlined text-sm group-hover/link:translate-x-1 transition-transform">arrow_forward</span>
+        </div>
     </a>
 </div>`;
 }
