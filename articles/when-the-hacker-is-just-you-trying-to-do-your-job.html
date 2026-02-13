@@ -1,11 +1,14 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>When the 'Hacker' is Just You Trying to Do Your Job - AtlasSecurity</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
     <script>
         tailwind.config = {
             darkMode: "class",
@@ -20,83 +23,177 @@
                         sans: ["Inter", "sans-serif"],
                         display: ["Plus Jakarta Sans", "sans-serif"],
                     },
+                    borderRadius: {
+                        DEFAULT: "0.75rem",
+                        "2xl": "1rem",
+                    },
                 },
             },
         };
     </script>
-    <style>
-        body {
-            background-color: #020617;
-            background-image: 
-                radial-gradient(at 0% 0%, rgba(49, 46, 129, 0.4) 0px, transparent 50%),
-                radial-gradient(at 100% 0%, rgba(79, 70, 229, 0.15) 0px, transparent 50%),
-                radial-gradient(at 100% 100%, rgba(29, 78, 216, 0.2) 0px, transparent 50%);
-            background-attachment: fixed;
-        }
+    <style type="text/tailwindcss">
         .glass {
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(16px);
             border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
         }
     </style>
+    <style>
+      .glass-content {
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(12px);
+        border-radius: 1rem;
+        padding: 2.5rem;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        max-width: 800px;
+        margin: 2rem auto;
+      }
+      .glass-content h1, .glass-content h2, .glass-content h3,
+      .glass-content p, .glass-content li {
+        color: #1a1a1a !important;
+      }
+      .glass-content a {
+        color: #0052cc;
+      }
+    </style>
 </head>
-<body class="text-slate-100 min-h-screen font-sans">
+<body class="text-slate-100 min-h-screen font-sans selection:bg-primary/30">
+    <video autoplay muted loop playsinline class="fixed inset-0 w-full h-full object-cover" style="z-index: -2; filter: brightness(0.95);">
+        <source src="../images/newvid.mp4" type="video/mp4">
+    </video>
+    <div class="fixed inset-0 bg-slate-800/40 pointer-events-none" style="z-index: -1;"></div>
     
-    <nav class="fixed top-0 w-full z-50 glass border-b border-white/5">
-        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="../index.html" class="text-2xl font-bold text-white">Atlas<span class="text-blue-400">SECURITY</span></a>
-            <a href="../insights.html" class="text-slate-300 hover:text-white transition-colors"> Back to Insights</a>
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glass-panel border-b border-slate-100 transition-all duration-300">
+        <div class="relative flex items-center justify-center px-5 py-6">
+            <a href="../index.html" class="flex items-center gap-3">
+                <span class="material-symbols-outlined text-transparent bg-clip-text bg-gradient-to-r from-[#0052cc] to-indigo-600" style="font-size: 32px;">security</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight text-slate-900">Atlas<span class="text-transparent bg-clip-text bg-gradient-to-r from-[#0052cc] to-indigo-600">SECURITY</span></h1>
+            </a>
+            <button id="menu-button" class="absolute right-5 p-2 text-slate-600 hover:text-primary transition-colors rounded-full hover:bg-slate-50">
+                <span class="material-symbols-outlined" style="font-size: 24px;">menu</span>
+            </button>
+            <div id="menu" class="hidden absolute top-16 right-5 bg-white rounded-lg shadow-lg p-2">
+                <a href="../index.html" class="block px-4 py-2 text-slate-700 hover:bg-slate-100">Home</a>
+                <a href="../about.html" class="block px-4 py-2 text-slate-700 hover:bg-slate-100">About</a>
+                <a href="../insights.html" class="block px-4 py-2 text-slate-700 hover:bg-slate-100">Insights</a>
+            </div>
         </div>
     </nav>
 
-    <main class="pt-32 pb-16 px-6 max-w-4xl mx-auto">
+    <main class="relative z-10 pt-32 pb-24 px-6 max-w-4xl mx-auto">
         <header class="mb-12 text-center">
-            <div class="flex items-center justify-center gap-3 mb-4 flex-wrap">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30 text-xs font-bold uppercase tracking-wider mb-6">
                 <span class="px-3 py-1 rounded-full text-xs font-semibold tracking-wider bg-orange-500/20 text-orange-300 border border-orange-500/30">RISK</span><span class="px-3 py-1 rounded-full text-xs font-semibold tracking-wider bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">GOVERNANCE</span>
-                <span class="text-slate-400 text-sm">JAN 28, 2026</span>
-                <span class="text-slate-400 text-sm">8 min read</span>
             </div>
             
-            <h1 class="text-4xl md:text-5xl font-bold text-white mb-6 leading-tight">When the 'Hacker' is Just You Trying to Do Your Job</h1>
+            <h1 class="text-4xl md:text-5xl font-display font-extrabold text-white mb-6 leading-tight tracking-tight">When the 'Hacker' is Just You Trying to Do Your Job</h1>
+            <div class="flex items-center justify-center gap-4 text-slate-300 text-sm font-medium">
+                <span class="text-slate-400 text-sm">JAN 28, 2026</span>
+            </div>
         </header>
 
-        <article class="prose prose-invert prose-lg max-w-none">
-          <p class="text-slate-300 leading-relaxed mb-4">When we picture a cybersecurity threat, we almost always imagine the same movie scene: a person in a dark hoodie, furiously typing code to break into a mainframe. It makes for great cinema, but it ignores a much simpler, more common reality. Most of the time, the &quot;threat&quot; isn&#039;t a villain breaking a lock. It's just a regular person, sitting at their desk (or on their couch), who accidentally leaves the digital window open. This brings us to a concept that sounds intense but is actually very human: Insider Risk.</p>
-<h2 class="text-2xl font-bold text-white mt-8 mb-4">Why We Should Care</h2>
-<p class="text-slate-300 leading-relaxed mb-4">We all want to be helpful and efficient. In our daily lives, this might mean emailing a document to our personal address so we can print it at home, or using a quick, free online tool to convert a file format.</p>
-<p class="text-slate-300 leading-relaxed mb-4">While these seem like small shortcuts to get the job done, they are actually huge headaches for security teams. In the digital world, your &quot;identity&quot;&mdash;your username and password&mdash;is the key to the kingdom. If you have the key, the security system assumes you are supposed to be there. The challenge isn&#039;t keeping strangers out; it&#039;s making sure the people with the keys don&#039;t accidentally knock over the vases.</p>
-<h2 class="text-2xl font-bold text-white mt-8 mb-4">Decoding the Jargon</h2>
-<p class="text-slate-300 leading-relaxed mb-4">To understand this new world of security, let's break down a few terms you might hear:</p>
+        <article class="glass-content prose prose-lg max-w-none prose-headings:font-display prose-headings:font-bold">
+          <p class="text-slate-700 leading-relaxed mb-4">When we picture a cybersecurity threat, we almost always imagine the same movie scene: a person in a dark hoodie, furiously typing code to break into a mainframe. It makes for great cinema, but it ignores a much simpler, more common reality. Most of the time, the &quot;threat&quot; isn&#039;t a villain breaking a lock. It's just a regular person, sitting at their desk (or on their couch), who accidentally leaves the digital window open. This brings us to a concept that sounds intense but is actually very human: Insider Risk.</p>
+<h2 class="text-2xl font-bold text-slate-900 mt-8 mb-4">Why We Should Care</h2>
+<p class="text-slate-700 leading-relaxed mb-4">We all want to be helpful and efficient. In our daily lives, this might mean emailing a document to our personal address so we can print it at home, or using a quick, free online tool to convert a file format.</p>
+<p class="text-slate-700 leading-relaxed mb-4">While these seem like small shortcuts to get the job done, they are actually huge headaches for security teams. In the digital world, your &quot;identity&quot;&mdash;your username and password&mdash;is the key to the kingdom. If you have the key, the security system assumes you are supposed to be there. The challenge isn&#039;t keeping strangers out; it&#039;s making sure the people with the keys don&#039;t accidentally knock over the vases.</p>
+<h2 class="text-2xl font-bold text-slate-900 mt-8 mb-4">Decoding the Jargon</h2>
+<p class="text-slate-700 leading-relaxed mb-4">To understand this new world of security, let's break down a few terms you might hear:</p>
 <ul class="list-disc list-inside ml-4 mb-4 space-y-2">
-<li><strong class="text-white">Insider Risk:</strong> <span class="text-slate-300">This doesn&#039;t necessarily mean a spy. It usually refers to an employee or contractor who has permission to access data but mishandles it&mdash;mostly by accident or negligence.</span></li>
-<li><strong class="text-white">BYOD (Bring Your Own Device):</strong> <span class="text-slate-300">Using your personal iPhone or laptop to do work tasks. It's convenient, but it mixes your personal apps with professional data.</span></li>
-<li><strong class="text-white">Shadow IT:</strong> <span class="text-slate-300">A dramatic name for a simple habit&mdash;using software that the IT department didn&#039;t approve. If you use a random website to compress a PDF because the official company tool is too slow, that's &quot;Shadow IT.&quot;</span></li>
+<li><strong class="text-slate-900">Insider Risk:</strong> <span class="text-slate-700">This doesn&#039;t necessarily mean a spy. It usually refers to an employee or contractor who has permission to access data but mishandles it&mdash;mostly by accident or negligence.</span></li>
+<li><strong class="text-slate-900">BYOD (Bring Your Own Device):</strong> <span class="text-slate-700">Using your personal iPhone or laptop to do work tasks. It's convenient, but it mixes your personal apps with professional data.</span></li>
+<li><strong class="text-slate-900">Shadow IT:</strong> <span class="text-slate-700">A dramatic name for a simple habit&mdash;using software that the IT department didn&#039;t approve. If you use a random website to compress a PDF because the official company tool is too slow, that's &quot;Shadow IT.&quot;</span></li>
 </ul>
-<h2 class="text-2xl font-bold text-white mt-8 mb-4">How the Safety Net Works</h2>
-<p class="text-slate-300 leading-relaxed mb-4">Think of a standard security system like a wall around a castle. It's great at stopping people from climbing over, but once someone is inside the gates, the wall does nothing to stop them from making a mess.</p>
-<p class="text-slate-300 leading-relaxed mb-4">Insider risk management changes the approach. Instead of just guarding the perimeter, it creates a &quot;visibility&quot; layer inside the network. It's like having a friendly guide who notices if you are wandering into a restricted area or carrying something heavy toward the exit. It doesn&#039;t stop you from doing your job; it just watches for actions that look risky or out of place.</p>
-<h2 class="text-2xl font-bold text-white mt-8 mb-4">The Blur Between Work and Home</h2>
-<p class="text-slate-300 leading-relaxed mb-4">The biggest reason this is becoming a hot topic is that our &quot;workplace&quot; has exploded. We aren&#039;t sitting in cubicles behind a firewall anymore. We are working from kitchen tables, airports, and coffee shops. When you access sensitive data from your personal tablet while waiting for a flight, the solid line between &quot;safe office&quot; and &quot;wild internet&quot; disappears. Security teams can&#039;t just secure the building anymore because the building is everywhere. This creates a &quot;blind spot&quot; where traditional tools just can&#039;t see what is happening.</p>
-<h2 class="text-2xl font-bold text-white mt-8 mb-4">Who is the &quot;Attacker&quot;?</h2>
-<p class="text-slate-300 leading-relaxed mb-4"><strong class="text-white">Here is the twist:</strong> usually, there is no attacker.</p>
-<p class="text-slate-300 leading-relaxed mb-4">Sure, sometimes there is a disgruntled employee who wants to steal a client list before they quit. But far more often, the &quot;risk&quot; is a hardworking employee trying to be productive. It's someone pasting a messy meeting transcript into a public AI chatbot to get a summary. It?s someone uploading a backup to their personal cloud storage because they are afraid of losing work.</p>
-<p class="text-slate-300 leading-relaxed mb-4">They aren&#039;t trying to hurt the company; they are just trying to do their job faster. But in doing so, they might accidentally hand over private data to the public.</p>
-<h2 class="text-2xl font-bold text-white mt-8 mb-4">A New Way of Thinking</h2>
-<p class="text-slate-300 leading-relaxed mb-4">Organizations are realizing that treating employees like suspects doesn&#039;t work. Locking everything down just makes people find creative workarounds.</p>
-<p class="text-slate-300 leading-relaxed mb-4">Instead, the modern approach is about &quot;Context.&quot; Security systems are getting smarter at understanding intent. If you download ten files at 2:00 PM on a Tuesday, that looks like normal work. If you download those same ten files at 3:00 AM on a Sunday, that looks suspicious. By looking at the context&mdash;the time, the place, and the behavior&mdash;security can spot the difference between a project and a problem.</p>
-<h2 class="text-2xl font-bold text-white mt-8 mb-4">Where AI Helps Us Out</h2>
-<p class="text-slate-300 leading-relaxed mb-4">This is where Artificial Intelligence plays a dual role. On one hand, employees using generative AI tools (like writing assistants) can accidentally leak data. But on the other hand, security teams are using their own AI to protect us.</p>
-<p class="text-slate-300 leading-relaxed mb-4">Since humans can&#039;t possibly watch every file movement without being creepy, AI helps by analyzing patterns. It learns what &quot;normal&quot; looks like for you. It allows for a &quot;privacy-first&quot; approach, the system doesn&#039;t care about your personal texts or what music you&#039;re streaming. It only cares if a piece of sensitive data is moving somewhere it shouldn&#039;t. It protects the data without spying on the person.</p>
-<h2 class="text-2xl font-bold text-white mt-8 mb-4">The Big Takeaway</h2>
-<p class="text-slate-300 leading-relaxed mb-4">Security is moving away from fear and control, and toward trust and resilience. The goal isn&#039;t to stop people from using cool new tools or working from home. The goal is to build a safety rail that lets us run fast without falling off the edge.</p>
-<p class="text-slate-300 leading-relaxed mb-4">As we continue to blend our digital lives with our professional ones, understanding these risks helps us be better digital citizens. It reminds us that sometimes, the best way to secure our data isn&#039;t a stronger password&mdash;it&#039;s just taking a second to think before we click &quot;Send.&quot;</p>
+<h2 class="text-2xl font-bold text-slate-900 mt-8 mb-4">How the Safety Net Works</h2>
+<p class="text-slate-700 leading-relaxed mb-4">Think of a standard security system like a wall around a castle. It's great at stopping people from climbing over, but once someone is inside the gates, the wall does nothing to stop them from making a mess.</p>
+<p class="text-slate-700 leading-relaxed mb-4">Insider risk management changes the approach. Instead of just guarding the perimeter, it creates a &quot;visibility&quot; layer inside the network. It's like having a friendly guide who notices if you are wandering into a restricted area or carrying something heavy toward the exit. It doesn&#039;t stop you from doing your job; it just watches for actions that look risky or out of place.</p>
+<h2 class="text-2xl font-bold text-slate-900 mt-8 mb-4">The Blur Between Work and Home</h2>
+<p class="text-slate-700 leading-relaxed mb-4">The biggest reason this is becoming a hot topic is that our &quot;workplace&quot; has exploded. We aren&#039;t sitting in cubicles behind a firewall anymore. We are working from kitchen tables, airports, and coffee shops. When you access sensitive data from your personal tablet while waiting for a flight, the solid line between &quot;safe office&quot; and &quot;wild internet&quot; disappears. Security teams can&#039;t just secure the building anymore because the building is everywhere. This creates a &quot;blind spot&quot; where traditional tools just can&#039;t see what is happening.</p>
+<h2 class="text-2xl font-bold text-slate-900 mt-8 mb-4">Who is the &quot;Attacker&quot;?</h2>
+<p class="text-slate-700 leading-relaxed mb-4"><strong class="text-slate-900">Here is the twist:</strong> usually, there is no attacker.</p>
+<p class="text-slate-700 leading-relaxed mb-4">Sure, sometimes there is a disgruntled employee who wants to steal a client list before they quit. But far more often, the &quot;risk&quot; is a hardworking employee trying to be productive. It's someone pasting a messy meeting transcript into a public AI chatbot to get a summary. It's someone uploading a backup to their personal cloud storage because they are afraid of losing work.</p>
+<p class="text-slate-700 leading-relaxed mb-4">They aren&#039;t trying to hurt the company; they are just trying to do their job faster. But in doing so, they might accidentally hand over private data to the public.</p>
+<h2 class="text-2xl font-bold text-slate-900 mt-8 mb-4">A New Way of Thinking</h2>
+<p class="text-slate-700 leading-relaxed mb-4">Organizations are realizing that treating employees like suspects doesn&#039;t work. Locking everything down just makes people find creative workarounds.</p>
+<p class="text-slate-700 leading-relaxed mb-4">Instead, the modern approach is about &quot;Context.&quot; Security systems are getting smarter at understanding intent. If you download ten files at 2:00 PM on a Tuesday, that looks like normal work. If you download those same ten files at 3:00 AM on a Sunday, that looks suspicious. By looking at the context&mdash;the time, the place, and the behavior&mdash;security can spot the difference between a project and a problem.</p>
+<h2 class="text-2xl font-bold text-slate-900 mt-8 mb-4">Where AI Helps Us Out</h2>
+<p class="text-slate-700 leading-relaxed mb-4">This is where Artificial Intelligence plays a dual role. On one hand, employees using generative AI tools (like writing assistants) can accidentally leak data. But on the other hand, security teams are using their own AI to protect us.</p>
+<p class="text-slate-700 leading-relaxed mb-4">Since humans can&#039;t possibly watch every file movement without being creepy, AI helps by analyzing patterns. It learns what &quot;normal&quot; looks like for you. It allows for a &quot;privacy-first&quot; approach, the system doesn&#039;t care about your personal texts or what music you&#039;re streaming. It only cares if a piece of sensitive data is moving somewhere it shouldn&#039;t. It protects the data without spying on the person.</p>
+<h2 class="text-2xl font-bold text-slate-900 mt-8 mb-4">The Big Takeaway</h2>
+<p class="text-slate-700 leading-relaxed mb-4">Security is moving away from fear and control, and toward trust and resilience. The goal isn&#039;t to stop people from using cool new tools or working from home. The goal is to build a safety rail that lets us run fast without falling off the edge.</p>
+<p class="text-slate-700 leading-relaxed mb-4">As we continue to blend our digital lives with our professional ones, understanding these risks helps us be better digital citizens. It reminds us that sometimes, the best way to secure our data isn&#039;t a stronger password&mdash;it&#039;s just taking a second to think before we click &quot;Send.&quot;</p>
 
         </article>
 
-        <div class="mt-16 pt-8 border-t border-white/10">
-            <a href="../insights.html" class="text-slate-400 hover:text-white transition-colors"> Back to all insights</a>
+        <div class="mt-16 pt-8 border-t border-white/10 flex justify-between items-center">
+            <a href="../insights.html" class="group inline-flex items-center gap-2 text-slate-300 hover:text-white transition-colors">
+                <span class="material-symbols-outlined text-sm group-hover:-translate-x-1 transition-transform">arrow_back</span>
+                Back to Insights
+            </a>
+        </div>
+        
+        <!-- Subscribe Section -->
+        <div class="mt-20">
+            <div class="bg-slate-900/90 backdrop-blur-md border border-indigo-500/20 rounded-[2rem] p-12 text-center relative overflow-hidden shadow-2xl">
+                <div class="absolute top-0 right-0 w-64 h-64 bg-primary/10 blur-[100px] rounded-full -mr-32 -mt-32"></div>
+                <div class="absolute bottom-0 left-0 w-64 h-64 bg-brand-blue/10 blur-[100px] rounded-full -ml-32 -mb-32"></div>
+                <div class="relative z-10">
+                    <div class="w-12 h-12 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center mx-auto mb-6">
+                        <span class="material-symbols-outlined text-primary">mail</span>
+                    </div>
+                    <h2 class="text-3xl font-display font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-indigo-700 to-blue-800">Stay Ahead of Security & AI Risks</h2>
+                    <p class="text-slate-400 mb-10 max-w-lg mx-auto">
+                        Subscribe to receive our bi-weekly Security &amp; AI Intelligence Report, delivered directly to your inbox.
+                    </p>
+                    <form class="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+                        <input class="flex-1 bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:ring-1 focus:ring-primary focus:border-primary transition-all outline-none" placeholder="Enter your email" required="" type="email"/>
+                        <button class="bg-primary text-white px-8 py-3 rounded-xl font-bold text-sm uppercase tracking-wider hover:bg-indigo-500 hover:shadow-lg hover:shadow-primary/20 transition-all" type="submit">Join Community</button>
+                    </form>
+                    <p class="mt-4 text-[10px] text-slate-500 uppercase tracking-widest">NO SPAM. JUST INTELLIGENCE. UNSUBSCRIBE ANYTIME.</p>
+                </div>
+            </div>
         </div>
     </main>
 
+    <!-- Bottom Nav -->
+    <nav class="fixed bottom-0 w-full z-50 bg-white/90 backdrop-blur-lg border-t border-slate-200 safe-area-bottom">
+        <div class="flex items-center justify-around px-2 py-3 pb-6 md:pb-3">
+            <a class="flex flex-col items-center gap-1 group w-16 text-slate-400 hover:text-slate-900 transition-colors" href="../index.html">
+                <div class="p-1 rounded-full group-hover:bg-slate-50 transition-colors">
+                    <span class="material-symbols-outlined text-2xl">home</span>
+                </div>
+                <span class="text-[10px] font-medium">AtlasSecurity</span>
+            </a>
+            <a class="flex flex-col items-center gap-1 group w-16 text-slate-400 hover:text-slate-900 transition-colors" href="../about.html">
+                <div class="p-1 rounded-full group-hover:bg-slate-50 transition-colors">
+                    <span class="material-symbols-outlined text-2xl">info</span>
+                </div>
+                <span class="text-[10px] font-medium">About</span>
+            </a>
+            <a class="flex flex-col items-center gap-1 group w-16" href="../insights.html">
+                <div class="p-1 rounded-full bg-blue-50 transition-colors">
+                    <span class="material-symbols-outlined text-2xl text-primary">article</span>
+                </div>
+                <span class="text-[10px] font-bold text-primary whitespace-nowrap text-center">Tech Insights</span>
+            </a>
+        </div>
+    </nav>
+
+    <script>
+        const menuButton = document.getElementById('menu-button');
+        const menu = document.getElementById('menu');
+
+        menuButton.addEventListener('click', () => {
+            menu.classList.toggle('hidden');
+        });
+    </script>
 </body>
 </html>

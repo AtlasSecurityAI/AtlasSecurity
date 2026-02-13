@@ -1,19 +1,82 @@
-// Configuration - UPDATE THESE
-var GITHUB_TOKEN = 'YOUR_GITHUB_TOKEN'; 
-var GITHUB_REPO = 'hashp/gitAtlas'; 
-var GITHUB_BRANCH = 'main';
+// ==========================================
+// MENU & SETTINGS
+// ==========================================
+
+function onOpen() {
+  DocumentApp.getUi()
+    .createMenu('Atlas Security')
+    .addItem('Publish Article', 'publishFullArticle')
+    .addSeparator()
+    .addItem('GitHub Settings', 'showSetupDialog')
+    .addToUi();
+}
+
+function showSetupDialog() {
+  var ui = DocumentApp.getUi();
+  var props = PropertiesService.getUserProperties();
+  
+  var token = props.getProperty('GITHUB_TOKEN') || '';
+  var repo = props.getProperty('GITHUB_REPO') || 'hashp/gitAtlas';
+  var branch = props.getProperty('GITHUB_BRANCH') || 'main';
+  
+  var result = ui.prompt(
+    'GitHub Configuration',
+    'Enter format: TOKEN|REPO|BRANCH\nExample: ghp_xyz|username/repo|main\n\nCurrent Repo: ' + repo,
+    ui.ButtonSet.OK_CANCEL
+  );
+  
+  if (result.getSelectedButton() == ui.Button.OK) {
+    var input = result.getResponseText().split('|');
+    if (input.length === 3) {
+      saveSettings(input[0].trim(), input[1].trim(), input[2].trim());
+      ui.alert('Settings saved successfully.');
+    } else {
+      ui.alert('Invalid format. Please use: TOKEN|REPO|BRANCH');
+    }
+  }
+}
+
+function saveSettings(token, repo, branch) {
+  var props = PropertiesService.getUserProperties();
+  props.setProperties({
+    'GITHUB_TOKEN': token,
+    'GITHUB_REPO': repo,
+    'GITHUB_BRANCH': branch
+  });
+}
+
+function getSettings() {
+  var props = PropertiesService.getUserProperties();
+  var token = props.getProperty('GITHUB_TOKEN');
+  var repo = props.getProperty('GITHUB_REPO');
+  var branch = props.getProperty('GITHUB_BRANCH');
+  
+  if (!token || !repo || !branch) {
+    throw new Error('GitHub settings not found. Please run "GitHub Settings" from the menu.');
+  }
+  
+  return { token: token, repo: repo, branch: branch };
+}
+
+// ==========================================
+// MAIN PUBLISH LOGIC
+// ==========================================
 
 /**
  * Main function to publish the article
  */
 function publishFullArticle() {
+  // 1. Validate Environment
   var doc = DocumentApp.getActiveDocument();
   if (!doc) {
-    Logger.log("Please run this script from a Google Doc.");
+    DocumentApp.getUi().alert("Please run this script from a Google Doc.");
     return;
   }
 
-  // Get content from the currently active tab
+  // 2. Get Settings
+  var settings = getSettings(); // Will throw if missing
+
+  // 3. Get Content Body
   var body;
   var activeTab = doc.getActiveTab();
   if (activeTab) {
@@ -22,37 +85,101 @@ function publishFullArticle() {
     body = doc.getBody();
   }
 
-  // Fix Error 2: Define paragraphs in scope
-  var paragraphs = body.getParagraphs();
-  var startIndex = 0;
-  var dateStr = ""; // Fix Error 2: Declare dateStr
+  // 4. Extract Date (From End)
+  var dateInfo = extractDateFromEnd(body);
+  var dateStr = dateInfo.dateRaw;
+  var dateDisplay = dateInfo.dateDisplay;
+  var dateYMD = dateInfo.dateISO;
+  var endIndex = dateInfo.paragraphIndex;
 
-  // 1. Extract Date (Manual Loop - Fix Error 1)
-  for (var i = 0; i < paragraphs.length; i++) {
+  if (!dateStr) throw new Error("No valid date found at end of document");
+
+  // 5. Extract Title & Excerpt (From Start)
+  var contentInfo = extractTitleAndExcerpt(body, 0, endIndex);
+  var title = contentInfo.title;
+  var excerpt = contentInfo.excerpt;
+  var startIndex = contentInfo.contentStartIndex;
+  
+  var slug = generateSlug(title);
+  
+  Logger.log("Title: " + title);
+  Logger.log("Date: " + dateDisplay);
+  Logger.log("Slug: " + slug);
+  Logger.log("Excerpt: " + excerpt);
+
+  // 6. Convert Content (Middle)
+  var markdownContent = convertDocToMarkdown(body, startIndex, endIndex);
+  var htmlContent = convertMarkdownToHTML(markdownContent); 
+  
+  // Calculate Read Time (approx 200 words/min)
+  var wordCount = markdownContent.split(/\s+/).length;
+  var readTime = Math.ceil(wordCount / 200) + " MIN READ";
+
+  // 7. Generate Files
+  // A. _posts markdown file (for Jekyll/GitHub Pages)
+  var postFileName = "_posts/" + dateYMD + "-" + slug + ".md";
+  var postContent = "---\nlayout: post\ntitle: \"" + title + "\"\ndate: " + dateYMD + "\ncategories: [Cloud Security]\n---\n\n" + markdownContent;
+  
+  // B. articles/[slug].html (Standalone HTML page)
+  var articleFileName = "articles/" + slug + ".html";
+  var fullArticleHTML = generateArticleHTML(title, slug, excerpt, dateYMD, dateDisplay, ["Cloud Security"], htmlContent);
+
+  // 8. Push to GitHub
+  uploadToGitHub(postFileName, postContent, settings);
+  uploadToGitHub(articleFileName, fullArticleHTML, settings);
+
+  // 9. Generate Card HTML (for manual update or future automation)
+  var cardHTML = generateCardHTML(title, excerpt, dateDisplay, readTime, "cloud-security", slug, slug + ".html");
+  Logger.log("Card HTML generated:\n" + cardHTML);
+  
+  // 10. Update insights.html
+  updateInsightsHTML(slug, title, excerpt, dateDisplay, "cloud-security", settings, cardHTML, readTime); 
+  
+  DocumentApp.getUi().alert("Published successfully!\n\nFiles created:\n" + postFileName + "\n" + articleFileName);
+}
+
+// ==========================================
+// EXTRACTION & HELPER FUNCTIONS
+// ==========================================
+
+/**
+ * Extracts date from the last non-empty paragraph
+ */
+function extractDateFromEnd(body) {
+  var paragraphs = body.getParagraphs();
+  var datePattern = /^(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2},\s+\d{4}$/;
+  
+  // Loop BACKWARDS from end to find date
+  for (var i = paragraphs.length - 1; i >= 0; i--) {
     var text = paragraphs[i].getText().trim();
     if (text.length > 0) {
-      // Check if text is a valid date
-      if (!isNaN(Date.parse(text))) {
-        dateStr = text;
-        startIndex = i + 1; // Start looking for title after date
-        break;
-      } else {
-        throw new Error("No publish date found on first line. Found: " + text);
+      if (datePattern.test(text)) {
+        var date = new Date(text);
+        return {
+          dateRaw: text,
+          dateISO: Utilities.formatDate(date, Session.getScriptTimeZone(), "yyyy-MM-dd"),
+          dateDisplay: Utilities.formatDate(date, Session.getScriptTimeZone(), "MMM dd, yyyy").toUpperCase(),
+          paragraphIndex: i
+        };
       }
+      break; // Stop at first non-empty paragraph from end
     }
   }
+  return { dateRaw: null, dateISO: null, dateDisplay: null, paragraphIndex: null };
+}
 
-  if (!dateStr) throw new Error("Document is empty or no date found.");
-  
-  var parsedDate = new Date(dateStr);
-  if (isNaN(parsedDate.getTime())) {
-    throw new Error("Invalid date format found: " + dateStr);
-  }
-  var dateYMD = Utilities.formatDate(parsedDate, Session.getScriptTimeZone(), "yyyy-MM-dd");
+/**
+ * Extracts Title and Excerpt from the beginning of the document
+ */
+function extractTitleAndExcerpt(body, startIndex, endIndex) {
+  var paragraphs = body.getParagraphs();
+  var title = "";
+  var excerpt = "";
+  var contentStartIndex = startIndex;
+  var limit = (endIndex !== undefined && endIndex !== null) ? endIndex : paragraphs.length;
 
-  // 2. Extract Title
-  var title = ""; // Fix Error 2: Declare title
-  for (var i = startIndex; i < paragraphs.length; i++) {
+  // 1. Find Title
+  for (var i = startIndex; i < limit; i++) {
     var p = paragraphs[i];
     var text = p.getText().trim();
     var heading = p.getHeading();
@@ -60,7 +187,7 @@ function publishFullArticle() {
     if (text.length > 0) {
       if (heading === DocumentApp.ParagraphHeading.HEADING1 || heading === DocumentApp.ParagraphHeading.TITLE) {
         title = text;
-        startIndex = i + 1; // Content starts after title
+        contentStartIndex = i + 1;
         break;
       }
     }
@@ -68,23 +195,21 @@ function publishFullArticle() {
 
   // Fallback Title
   if (!title) {
-    for (var i = startIndex; i < paragraphs.length; i++) {
+    for (var i = startIndex; i < limit; i++) {
       var text = paragraphs[i].getText().trim();
       if (text.length > 0) {
         title = text;
-        startIndex = i + 1;
+        contentStartIndex = i + 1;
         break;
       }
     }
-    if (!title) title = doc.getName();
+    if (!title) title = DocumentApp.getActiveDocument().getName();
   }
   
   title = fixEncoding(title);
-  var slug = generateSlug(title);
 
-  // 3. Extract Excerpt
-  var excerpt = "";
-  for (var i = startIndex; i < paragraphs.length; i++) {
+  // 2. Find Excerpt (Look ahead from contentStartIndex)
+  for (var i = contentStartIndex; i < limit; i++) {
     var p = paragraphs[i];
     var text = p.getText().trim();
     // Skip empty lines or sub-headings
@@ -98,31 +223,12 @@ function publishFullArticle() {
     }
   }
   excerpt = fixEncoding(excerpt);
-  
-  Logger.log("Title: " + title);
-  Logger.log("Date: " + dateStr);
-  Logger.log("Slug: " + slug);
-  Logger.log("Excerpt: " + excerpt);
 
-  // 4. Convert Content
-  var markdownContent = convertDocToMarkdown(body, startIndex);
-  var htmlContent = convertMarkdownToHTML(markdownContent); 
-
-  // 5. Generate Files
-  // A. _posts markdown file (for Jekyll/GitHub Pages)
-  var postFileName = "_posts/" + dateYMD + "-" + slug + ".md";
-  var postContent = "---\nlayout: post\ntitle: \"" + title + "\"\ndate: " + dateYMD + "\ncategories: [Cloud Security]\n---\n\n" + markdownContent;
-  
-  // B. articles/[slug].html (Standalone HTML page)
-  var articleFileName = "articles/" + slug + ".html";
-  var fullArticleHTML = generateArticleHTML(title, slug, excerpt, dateYMD, dateStr, ["Cloud Security"], htmlContent);
-
-  // 6. Push to GitHub
-  uploadToGitHub(postFileName, postContent);
-  uploadToGitHub(articleFileName, fullArticleHTML);
-
-  // 7. Update insights.html
-  updateInsightsHTML(slug, title, excerpt, dateStr, "cloud-security"); 
+  return {
+    title: title,
+    excerpt: excerpt,
+    contentStartIndex: contentStartIndex
+  };
 }
 
 /**
@@ -130,14 +236,21 @@ function publishFullArticle() {
  */
 function fixEncoding(text) {
   if (!text) return text;
+  
+  // 1. Replace smart quotes with straight quotes (Preventative)
+  text = text.replace(/[\u2018\u2019]/g, "'").replace(/[\u201C\u201D]/g, '"');
+
+  // 2. Replace ? encoding errors (Curative)
   // Replace ? between letters (It?s -> It's)
   text = text.replace(/([a-zA-Z])\?([a-zA-Z])/g, "$1'$2");
   // Replace ? at start of word (?tis -> 'tis)
   text = text.replace(/(^|\s)\?([a-zA-Z])/g, "$1'$2");
+  
   return text;
 }
 
 function generateSlug(text) {
+  text = fixEncoding(text); // Ensure title is clean before slugifying
   return text.toString().toLowerCase()
     .trim()
     .replace(/\s+/g, '-')           // Replace spaces with -
@@ -147,11 +260,12 @@ function generateSlug(text) {
     .replace(/-+$/, '');            // Trim - from end of text
 }
 
-function convertDocToMarkdown(body, startIndex) {
+function convertDocToMarkdown(body, startIndex, endIndex) {
   var paragraphs = body.getParagraphs();
   var md = "";
+  var limit = (endIndex !== undefined) ? endIndex : paragraphs.length;
   
-  for (var i = startIndex; i < paragraphs.length; i++) {
+  for (var i = startIndex; i < limit; i++) {
     var p = paragraphs[i];
     var text = fixEncoding(p.getText()); // Apply encoding fix
     var heading = p.getHeading();
@@ -167,6 +281,10 @@ function convertDocToMarkdown(body, startIndex) {
   return md;
 }
 
+// ==========================================
+// HTML GENERATION
+// ==========================================
+
 function generateArticleHTML(title, slug, excerpt, date, displayDate, categories, content) {
   var category = (categories && categories.length > 0) ? categories[0] : "Article";
 
@@ -178,59 +296,71 @@ function generateArticleHTML(title, slug, excerpt, date, displayDate, categories
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <meta name="description" content="${excerpt}"/>
     <title>${title} - AtlasSecurity</title>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Noto+Sans:wght@400;500;700&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries,typography"></script>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
     <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              "primary": "#0052cc", 
-              "primary-dark": "#003d99",
-              "accent-blue": "#2b8cee",
-              "background-light": "#ffffff",
-              "surface-light": "#f8fafc",
-              "cool-gray": "#cbd5e1",
-              "text-main": "#0f172a",
-              "text-muted": "#64748b",
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#6366f1",
+                        "brand-indigo": "#4f46e5",
+                        "brand-blue": "#1d4ed8",
+                    },
+                    fontFamily: {
+                        sans: ["Inter", "sans-serif"],
+                        display: ["Plus Jakarta Sans", "sans-serif"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.75rem",
+                        "2xl": "1rem",
+                    },
+                },
             },
-            fontFamily: {
-              "display": ["Space Grotesk", "sans-serif"],
-              "body": ["Noto Sans", "sans-serif"],
-            },
-            backgroundImage: {
-              'hero-gradient': 'linear-gradient(180deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.2) 100%)',
-            },
-            boxShadow: {
-              'soft': '0 20px 40px -10px rgba(0, 50, 100, 0.1)',
-              'card': '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)',
-              'glow': '0 0 20px rgba(43, 140, 238, 0.3)',
-            }
-          },
-        },
-      }
+        };
     </script>
-    <style>
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    <style type="text/tailwindcss">
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
         .glass-panel {
             background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
         }
-        ::selection {
-            background: #e0f2fe;
-            color: #0052cc;
-        }
-        body { min-height: max(884px, 100dvh); }
+    </style>
+    <style>
+      .glass-content {
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(12px);
+        border-radius: 1rem;
+        padding: 2.5rem;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        max-width: 800px;
+        margin: 2rem auto;
+      }
+      .glass-content h1, .glass-content h2, .glass-content h3,
+      .glass-content p, .glass-content li {
+        color: #1a1a1a !important;
+      }
+      .glass-content a {
+        color: #0052cc;
+      }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 font-body antialiased selection:bg-primary/30">
-    <video autoplay muted loop playsinline class="fixed inset-0 w-full h-full object-cover" style="z-index: -2; filter: brightness(0.6);">
+<body class="text-slate-100 min-h-screen font-sans selection:bg-primary/30">
+    <video autoplay muted loop playsinline class="fixed inset-0 w-full h-full object-cover" style="z-index: -2; filter: brightness(0.95);">
         <source src="../images/newvid.mp4" type="video/mp4">
     </video>
-    <div class="fixed inset-0 bg-slate-900/50 pointer-events-none" style="z-index: -1;"></div>
+    <div class="fixed inset-0 bg-slate-800/40 pointer-events-none" style="z-index: -1;"></div>
 
     <!-- Navigation -->
     <nav class="fixed top-0 w-full z-50 glass-panel border-b border-slate-100 transition-all duration-300">
@@ -255,43 +385,45 @@ function generateArticleHTML(title, slug, excerpt, date, displayDate, categories
              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30 text-xs font-bold uppercase tracking-wider mb-6">
                 <span>${category}</span>
             </div>
-            <h1 class="text-4xl md:text-5xl font-display font-bold text-white mb-6 leading-tight">${title}</h1>
-            <div class="flex items-center justify-center gap-4 text-slate-400 text-sm">
+            <h1 class="text-4xl md:text-5xl font-display font-extrabold text-white mb-6 leading-tight tracking-tight">${title}</h1>
+            <div class="flex items-center justify-center gap-4 text-slate-300 text-sm font-medium">
                 <span>${displayDate}</span>
-                <span>•</span>
-                <span>AtlasSecurity Team</span>
             </div>
         </header>
 
-        <article class="prose prose-invert prose-lg max-w-none prose-headings:font-display prose-headings:font-bold prose-a:text-blue-400 hover:prose-a:text-blue-300">
+        <article class="glass-content prose prose-lg max-w-none prose-headings:font-display prose-headings:font-bold">
             ${content}
         </article>
 
         <div class="mt-16 pt-8 border-t border-white/10 flex justify-between items-center">
-            <a href="../insights.html" class="group inline-flex items-center gap-2 text-slate-400 hover:text-white transition-colors">
+            <a href="../insights.html" class="group inline-flex items-center gap-2 text-slate-300 hover:text-white transition-colors">
                 <span class="material-symbols-outlined group-hover:-translate-x-1 transition-transform">arrow_back</span>
                 Back to Insights
             </a>
         </div>
-    </main>
-
-    <!-- Footer Section -->
-    <section class="px-5 py-20 bg-white/60 backdrop-blur-md border-t border-slate-100/50 relative z-10">
-        <div class="flex flex-col items-center text-center max-w-md mx-auto">
-            <div class="p-4 bg-white/50 rounded-2xl mb-6 border border-white/50">
-                <span class="material-symbols-outlined text-primary text-3xl">groups</span>
+        
+        <!-- Subscribe Section -->
+        <div class="mt-20">
+            <div class="bg-slate-900/90 backdrop-blur-md border border-indigo-500/20 rounded-[2rem] p-12 text-center relative overflow-hidden shadow-2xl">
+                <div class="absolute top-0 right-0 w-64 h-64 bg-primary/10 blur-[100px] rounded-full -mr-32 -mt-32"></div>
+                <div class="absolute bottom-0 left-0 w-64 h-64 bg-brand-blue/10 blur-[100px] rounded-full -ml-32 -mb-32"></div>
+                <div class="relative z-10">
+                    <div class="w-12 h-12 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center mx-auto mb-6">
+                        <span class="material-symbols-outlined text-primary">mail</span>
+                    </div>
+                    <h2 class="text-3xl font-display font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-indigo-700 to-blue-800">Stay Ahead of Security & AI Risks</h2>
+                    <p class="text-slate-400 mb-10 max-w-lg mx-auto">
+                        Subscribe to receive our bi-weekly Security &amp; AI Intelligence Report, delivered directly to your inbox.
+                    </p>
+                    <form class="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+                        <input class="flex-1 bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:ring-1 focus:ring-primary focus:border-primary transition-all outline-none" placeholder="Enter your email" required="" type="email"/>
+                        <button class="bg-primary text-white px-8 py-3 rounded-xl font-bold text-sm uppercase tracking-wider hover:bg-indigo-500 hover:shadow-lg hover:shadow-primary/20 transition-all" type="submit">Join Community</button>
+                    </form>
+                    <p class="mt-4 text-[10px] text-slate-500 uppercase tracking-widest">NO SPAM. JUST INTELLIGENCE. UNSUBSCRIBE ANYTIME.</p>
+                </div>
             </div>
-            <h3 class="text-2xl font-bold mb-3 text-transparent bg-clip-text bg-gradient-to-r from-primary via-indigo-800 to-blue-500">AtlasSECURITY Community</h3>
-            <p class="text-slate-500 text-sm mb-8 leading-relaxed">Get the latest AI governance frameworks and threat reports delivered to your inbox weekly.</p>
-            <form class="w-full flex flex-col gap-3">
-                <input class="w-full px-4 py-3 bg-white/70 border border-slate-200 rounded-lg text-slate-900 placeholder-slate-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all shadow-sm" placeholder="Enter your email" type="email"/>
-                <button class="w-full px-4 py-3 text-white font-bold rounded-lg transition-all shadow-lg shadow-blue-500/20 bg-gradient-to-r from-primary via-indigo-800 to-blue-500 hover:opacity-90" type="button">
-                    Join Community
-                </button>
-            </form>
-            <p class="text-xs text-slate-400 mt-4">No spam. Unsubscribe anytime.</p>
         </div>
-    </section>
+    </main>
 
     <!-- Bottom Nav -->
     <nav class="fixed bottom-0 w-full z-50 bg-white/90 backdrop-blur-lg border-t border-slate-200 safe-area-bottom">
@@ -329,33 +461,6 @@ function generateArticleHTML(title, slug, excerpt, date, displayDate, categories
 </html>`;
 }
 
-function updateInsightsHTML(slug, title, excerpt, date, category) {
-  // This function would fetch insights.html, inject the new card HTML, and push back to GitHub.
-  // Implementation depends on specific GitHub API logic (fetching SHA, decoding content, etc.)
-  Logger.log("Updating insights.html for: " + title);
-}
-
-function uploadToGitHub(fileName, content, sha) {
-  var url = "https://api.github.com/repos/" + GITHUB_REPO + "/contents/" + fileName;
-  var payload = {
-    "message": "Update " + fileName,
-    "content": Utilities.base64Encode(content),
-    "branch": GITHUB_BRANCH
-  };
-  if (sha) payload.sha = sha;
-  
-  var options = {
-    method: "put",
-    headers: { "Authorization": "Bearer " + GITHUB_TOKEN, "Content-Type": "application/json" },
-    payload: JSON.stringify(payload)
-  };
-  UrlFetchApp.fetch(url, options);
-}
-
-function convertMarkdownToHTML(markdown) {
-  return markdown.replace(/^### (.*$)/gim, '<h3>$1</h3>').replace(/^## (.*$)/gim, '<h2>$1</h2>').replace(/\n/gim, '<br />');
-}
-
 function generateCardHTML(title, excerpt, date, readTime, category, slug, filename) {
   var categoryConfig = {
     "cloud-security": "bg-blue-500/20 text-blue-300 border-blue-500/30",
@@ -369,22 +474,153 @@ function generateCardHTML(title, excerpt, date, readTime, category, slug, filena
   var categoryLabel = category.replace(/-/g, ' ').toUpperCase();
   
   return `
-<div id="article-${slug}" class="bg-slate-900/90 backdrop-blur-md border border-indigo-500/20 shadow-2xl hover:border-indigo-500/40 rounded-2xl relative overflow-hidden group hover:scale-[1.02] transition-all duration-300" data-category="${category}">
-    <a href="articles/${filename}" class="block p-8 h-full">
-        <div class="flex items-center gap-3 mb-6">
-            <span class="${categoryClass} border text-[10px] font-black px-2.5 py-1 rounded-md uppercase tracking-tighter">${categoryLabel}</span>
-            <span class="text-slate-400 text-xs font-medium uppercase">${date}</span>
-            <span class="text-slate-600 text-xs">•</span>
-            <span class="text-slate-400 text-xs font-medium uppercase">${readTime}</span>
+<article id="article-${slug}" class="bg-slate-900/90 backdrop-blur-md border border-indigo-500/20 shadow-2xl rounded-2xl relative overflow-hidden group hover:scale-[1.02] transition-transform duration-300" data-category="${category}">
+    <a href="articles/${filename}" class="block p-6 md:p-8 h-full">
+        <div class="flex items-center gap-3 mb-4 flex-wrap">
+            <span class="px-3 py-1 rounded-full text-xs font-semibold tracking-wider border ${categoryClass}">
+              ${categoryLabel}
+            </span>
+            <span class="text-slate-400 text-xs">${date}</span>
+            <span class="text-slate-400 text-xs">${readTime}</span>
         </div>
-        <h3 class="text-xl md:text-2xl font-bold mb-4 leading-tight text-white group-hover:text-blue-400 transition-colors">${title}</h3>
-        <p class="text-slate-300 text-sm leading-relaxed mb-8 line-clamp-3">
-            ${excerpt}
+        
+        <h3 class="text-xl md:text-2xl font-bold text-white mb-3 group-hover:text-blue-300 transition-colors line-clamp-2">
+          ${title}
+        </h3>
+        
+        <p class="text-slate-300 text-sm leading-relaxed mb-6 line-clamp-3">
+          ${excerpt}
         </p>
-        <div class="inline-flex items-center text-blue-400 hover:text-blue-300 text-sm font-bold uppercase tracking-widest gap-2 group/link">
-            Read Full Insight 
-            <span class="material-symbols-outlined text-sm group-hover/link:translate-x-1 transition-transform">arrow_forward</span>
+        
+        <div class="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 text-sm font-medium transition-colors group/link">
+          READ FULL INSIGHT
+          <svg class="w-4 h-4 group-hover/link:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+          </svg>
         </div>
     </a>
-</div>`;
+</article>`;
+}
+
+function updateInsightsHTML(slug, title, excerpt, date, category, settings, cardHTML, readTime) {
+  var fileName = "insights.html";
+  var url = "https://api.github.com/repos/" + settings.repo + "/contents/" + fileName;
+  
+  var options = {
+    method: "get",
+    headers: { "Authorization": "Bearer " + settings.token }
+  };
+  
+  try {
+    var response = UrlFetchApp.fetch(url, options);
+    var data = JSON.parse(response.getContentText());
+    var decodedContent = Utilities.newBlob(Utilities.base64Decode(data.content)).getDataAsString();
+    var sha = data.sha;
+    
+    var insertionPoint = '<div class="grid grid-cols-1 md:grid-cols-2 gap-8">';
+    if (decodedContent.indexOf(insertionPoint) !== -1) {
+      var newContent = decodedContent.replace(insertionPoint, insertionPoint + "\n\n    <!-- " + title + " -->\n" + cardHTML);
+      uploadToGitHub(fileName, newContent, settings, sha);
+    } else {
+      throw new Error("Insertion point not found in insights.html");
+    }
+  } catch (e) {
+    Logger.log("Error updating insights.html: " + e.toString());
+    DocumentApp.getUi().alert("Error updating insights.html: " + e.toString());
+  }
+
+  // 2. Update index.html (Recent Articles Slider)
+  if (readTime) {
+    updateIndexHTML(slug, title, excerpt, date, category, settings, readTime);
+  }
+}
+
+function updateIndexHTML(slug, title, excerpt, date, category, settings, readTime) {
+  var fileName = "index.html";
+  var url = "https://api.github.com/repos/" + settings.repo + "/contents/" + fileName;
+  
+  var options = {
+    method: "get",
+    headers: { "Authorization": "Bearer " + settings.token }
+  };
+  
+  try {
+    var response = UrlFetchApp.fetch(url, options);
+    var data = JSON.parse(response.getContentText());
+    var decodedContent = Utilities.newBlob(Utilities.base64Decode(data.content)).getDataAsString();
+    var sha = data.sha;
+    
+    var slideHTML = generateSlideHTML(title, excerpt, date, readTime, category, slug, slug + ".html");
+    var insertionPoint = '<div class="swiper-wrapper">';
+    
+    if (decodedContent.indexOf(insertionPoint) !== -1) {
+      var newContent = decodedContent.replace(insertionPoint, insertionPoint + "\n        <!-- " + title + " -->\n" + slideHTML);
+      uploadToGitHub(fileName, newContent, settings, sha);
+    } else {
+      Logger.log("Insertion point not found in index.html");
+    }
+  } catch (e) {
+    Logger.log("Error updating index.html: " + e.toString());
+    DocumentApp.getUi().alert("Error updating index.html: " + e.toString());
+  }
+}
+
+function generateSlideHTML(title, excerpt, date, readTime, category, slug, filename) {
+  var categoryLabel = category.replace(/-/g, ' ').toUpperCase();
+  // Using a default image since dynamic image extraction isn't implemented yet
+  var defaultImage = "https://lh3.googleusercontent.com/aida-public/AB6AXuBHWux8iAKCKWnCwFSlJCTo97_H4beCb-gemOkvwghR12h9nLkX68vtl037ki-OXLCK42xfr8l3mdbtrEI4f3AxbbWU6JfMT-y4crb9AQ5OvyMsKDtwbCxP_n4YX95Jl69KPm4jQ_gnC1ughgUwfZzyM5qUeyI0csJ54a6Kx2YjVopSf9NaWOz6GOpsYYdEmj_Jq0mzz9jHFoWyGHKDFlngkeXTl_Wrwzy2REyVlksgjBAgGYxneMQ4ZTmXvlJK1O-v_JNQMQovCLA";
+  
+  return `        <div class="swiper-slide h-auto">
+            <a href="articles/${filename}" class="block group bg-white/80 backdrop-blur-sm rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col border border-white/50 h-full cursor-pointer">
+                <div class="relative h-60 w-full overflow-hidden">
+                    <img alt="Article thumbnail" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700" src="${defaultImage}"/>
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent opacity-80"></div>
+                    <div class="absolute top-4 left-4">
+                        <span class="px-3 py-1 bg-white/95 backdrop-blur-sm text-xs font-bold text-slate-900 rounded-md shadow-sm uppercase tracking-wider">${categoryLabel}</span>
+                    </div>
+                </div>
+                <div class="p-7 flex flex-col flex-grow">
+                    <div class="flex items-center gap-3 text-xs font-bold text-slate-400 mb-4 uppercase tracking-wide">
+                        <span class="text-primary">${date}</span>
+                        <span>•</span>
+                        <span>${readTime}</span>
+                    </div>
+                    <h3 class="text-2xl font-bold text-slate-900 leading-tight mb-3 group-hover:text-primary transition-colors">${title}</h3>
+                    <div class="flex flex-col gap-4 mt-auto pt-5 border-t border-slate-50">
+                        <p class="text-slate-500 text-sm leading-relaxed line-clamp-2">${excerpt}</p>
+                        <span class="text-primary font-bold text-sm flex items-center gap-1 ml-auto group-hover:translate-x-1 transition-transform">
+                            Read full article <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                        </span>
+                    </div>
+                </div>
+            </a>
+        </div>`;
+}
+
+function uploadToGitHub(fileName, content, settings, sha) {
+  var url = "https://api.github.com/repos/" + settings.repo + "/contents/" + fileName;
+  var payload = {
+    "message": "Update " + fileName,
+    "content": Utilities.base64Encode(content),
+    "branch": settings.branch
+  };
+  if (sha) payload.sha = sha;
+  
+  var options = {
+    method: "put",
+    headers: { "Authorization": "Bearer " + settings.token, "Content-Type": "application/json" },
+    payload: JSON.stringify(payload)
+  };
+  
+  try {
+    UrlFetchApp.fetch(url, options);
+    Logger.log("Uploaded: " + fileName);
+  } catch (e) {
+    Logger.log("Error uploading " + fileName + ": " + e.toString());
+    // In a real scenario, you might want to handle 422 (file exists) by fetching SHA first
+  }
+}
+
+function convertMarkdownToHTML(markdown) {
+  return markdown.replace(/^### (.*$)/gim, '<h3>$1</h3>').replace(/^## (.*$)/gim, '<h2>$1</h2>').replace(/\n/gim, '<br />');
 }

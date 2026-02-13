@@ -1,11 +1,14 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>Your Data is Leaking (And It's Usually an Accident) - AtlasSecurity</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
     <script>
         tailwind.config = {
             darkMode: "class",
@@ -20,81 +23,175 @@
                         sans: ["Inter", "sans-serif"],
                         display: ["Plus Jakarta Sans", "sans-serif"],
                     },
+                    borderRadius: {
+                        DEFAULT: "0.75rem",
+                        "2xl": "1rem",
+                    },
                 },
             },
         };
     </script>
-    <style>
-        body {
-            background-color: #020617;
-            background-image: 
-                radial-gradient(at 0% 0%, rgba(49, 46, 129, 0.4) 0px, transparent 50%),
-                radial-gradient(at 100% 0%, rgba(79, 70, 229, 0.15) 0px, transparent 50%),
-                radial-gradient(at 100% 100%, rgba(29, 78, 216, 0.2) 0px, transparent 50%);
-            background-attachment: fixed;
-        }
+    <style type="text/tailwindcss">
         .glass {
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(16px);
             border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
         }
     </style>
+    <style>
+      .glass-content {
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(12px);
+        border-radius: 1rem;
+        padding: 2.5rem;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        max-width: 800px;
+        margin: 2rem auto;
+      }
+      .glass-content h1, .glass-content h2, .glass-content h3,
+      .glass-content p, .glass-content li {
+        color: #1a1a1a !important;
+      }
+      .glass-content a {
+        color: #0052cc;
+      }
+    </style>
 </head>
-<body class="text-slate-100 min-h-screen font-sans">
+<body class="text-slate-100 min-h-screen font-sans selection:bg-primary/30">
+    <video autoplay muted loop playsinline class="fixed inset-0 w-full h-full object-cover" style="z-index: -2; filter: brightness(0.95);">
+        <source src="../images/newvid.mp4" type="video/mp4">
+    </video>
+    <div class="fixed inset-0 bg-slate-800/40 pointer-events-none" style="z-index: -1;"></div>
     
-    <nav class="fixed top-0 w-full z-50 glass border-b border-white/5">
-        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="../index.html" class="text-2xl font-bold text-white">Atlas<span class="text-blue-400">SECURITY</span></a>
-            <a href="../insights.html" class="text-slate-300 hover:text-white transition-colors"> Back to Insights</a>
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glass-panel border-b border-slate-100 transition-all duration-300">
+        <div class="relative flex items-center justify-center px-5 py-6">
+            <a href="../index.html" class="flex items-center gap-3">
+                <span class="material-symbols-outlined text-transparent bg-clip-text bg-gradient-to-r from-[#0052cc] to-indigo-600" style="font-size: 32px;">security</span>
+                <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight text-slate-900">Atlas<span class="text-transparent bg-clip-text bg-gradient-to-r from-[#0052cc] to-indigo-600">SECURITY</span></h1>
+            </a>
+            <button id="menu-button" class="absolute right-5 p-2 text-slate-600 hover:text-primary transition-colors rounded-full hover:bg-slate-50">
+                <span class="material-symbols-outlined" style="font-size: 24px;">menu</span>
+            </button>
+            <div id="menu" class="hidden absolute top-16 right-5 bg-white rounded-lg shadow-lg p-2">
+                <a href="../index.html" class="block px-4 py-2 text-slate-700 hover:bg-slate-100">Home</a>
+                <a href="../about.html" class="block px-4 py-2 text-slate-700 hover:bg-slate-100">About</a>
+                <a href="../insights.html" class="block px-4 py-2 text-slate-700 hover:bg-slate-100">Insights</a>
+            </div>
         </div>
     </nav>
 
-    <main class="pt-32 pb-16 px-6 max-w-4xl mx-auto">
+    <main class="relative z-10 pt-32 pb-24 px-6 max-w-4xl mx-auto">
         <header class="mb-12 text-center">
-            <div class="flex items-center gap-3 mb-4 flex-wrap">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30 text-xs font-bold uppercase tracking-wider mb-6">
                 <span class="px-3 py-1 rounded-full text-xs font-semibold tracking-wider bg-teal-500/20 text-teal-300 border border-teal-500/30">COMPLIANCE</span><span class="px-3 py-1 rounded-full text-xs font-semibold tracking-wider bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">GOVERNANCE</span>
-                <span class="text-slate-400 text-sm">JAN 13, 2026</span>
-                <span class="text-slate-400 text-sm">8 min read</span>
             </div>
             
-            <h1 class="text-4xl md:text-5xl font-bold text-white mb-6 leading-tight">Your Data is Leaking (And It's Usually an Accident)</h1>
+            <h1 class="text-4xl md:text-5xl font-display font-extrabold text-white mb-6 leading-tight tracking-tight">Your Data is Leaking (And It's Usually an Accident)</h1>
+            <div class="flex items-center justify-center gap-4 text-slate-300 text-sm font-medium">
+                <span class="text-slate-400 text-sm">JAN 13, 2026</span>
+            </div>
         </header>
 
-        <article class="prose prose-invert prose-lg max-w-none">
-<p class="text-slate-300 leading-relaxed mb-4">We live in a world where sharing is the default. We share photos, locations, and updates instantly. But in the background, there is a massive amount of &quot;boring&quot; data&mdash;your home address, your medical history, your insurance details&mdash;that is constantly moving between companies, doctors, and banks.</p>
-<p class="text-slate-300 leading-relaxed mb-4">The problem isn&#039;t usually that some evil genius breaks in and steals it (though that happens). The bigger problem is that digital data is like water; if there is even a tiny crack in the pipe, it leaks out. And often, we are the ones accidentally making the cracks.</p>
-<h2 class="text-2xl font-bold text-white mt-8 mb-4">Why This Hits Home</h2>
-<p class="text-slate-300 leading-relaxed mb-4">This matters because your data is effectively your digital identity. When &quot;Personally Identifiable Information&quot; (a fancy term for things like your Social Security number or birthdate) gets out, it doesn&#039;t just sit there. It can be used to open credit cards in your name or access your bank accounts.</p>
-<p class="text-slate-300 leading-relaxed mb-4">It's not just about money, either. It's about privacy. Nobody wants their private medical records or legal documents floating around the internet just because someone clicked &quot;Reply All&quot; on an email by mistake.</p>
-<h2 class="text-2xl font-bold text-white mt-8 mb-4">The Keys to the Kingdom</h2>
-<p class="text-slate-300 leading-relaxed mb-4">To understand how we fix this, we have to look at how we access things. In the security world, there are two main concepts that keep things safe:</p>
+        <article class="glass-content prose prose-lg max-w-none prose-headings:font-display prose-headings:font-bold">
+<p class="text-slate-700 leading-relaxed mb-4">We live in a world where sharing is the default. We share photos, locations, and updates instantly. But in the background, there is a massive amount of &quot;boring&quot; data&mdash;your home address, your medical history, your insurance details&mdash;that is constantly moving between companies, doctors, and banks.</p>
+<p class="text-slate-700 leading-relaxed mb-4">The problem isn&#039;t usually that some evil genius breaks in and steals it (though that happens). The bigger problem is that digital data is like water; if there is even a tiny crack in the pipe, it leaks out. And often, we are the ones accidentally making the cracks.</p>
+<h2 class="text-2xl font-bold text-slate-900 mt-8 mb-4">Why This Hits Home</h2>
+<p class="text-slate-700 leading-relaxed mb-4">This matters because your data is effectively your digital identity. When &quot;Personally Identifiable Information&quot; (a fancy term for things like your Social Security number or birthdate) gets out, it doesn&#039;t just sit there. It can be used to open credit cards in your name or access your bank accounts.</p>
+<p class="text-slate-700 leading-relaxed mb-4">It's not just about money, either. It's about privacy. Nobody wants their private medical records or legal documents floating around the internet just because someone clicked &quot;Reply All&quot; on an email by mistake.</p>
+<h2 class="text-2xl font-bold text-slate-900 mt-8 mb-4">The Keys to the Kingdom</h2>
+<p class="text-slate-700 leading-relaxed mb-4">To understand how we fix this, we have to look at how we access things. In the security world, there are two main concepts that keep things safe:</p>
 <ul class="list-disc list-inside ml-4 mb-4 space-y-2">
-<li><strong class="text-white">The &quot;Need to Know&quot; Rule:</strong> <span class="text-slate-300">This is the idea that you should only have access to the specific files you need to do your job. If you work in the cafeteria, you don&#039;t need the keys to the bank vault.</span></li>
-<li><strong class="text-white">The Double-Check (MFA):</strong> <span class="text-slate-300">You know how some sites send a code to your phone after you type your password? That's &quot;Multifactor Authentication.&quot; It's just a way of saying, &quot;I know you have the key (password), but show me your ID (phone code) too.&quot;</span></li>
+<li><strong class="text-slate-900">The &quot;Need to Know&quot; Rule:</strong> <span class="text-slate-700">This is the idea that you should only have access to the specific files you need to do your job. If you work in the cafeteria, you don&#039;t need the keys to the bank vault.</span></li>
+<li><strong class="text-slate-900">The Double-Check (MFA):</strong> <span class="text-slate-700">You know how some sites send a code to your phone after you type your password? That's &quot;Multifactor Authentication.&quot; It's just a way of saying, &quot;I know you have the key (password), but show me your ID (phone code) too.&quot;</span></li>
 </ul>
-<h2 class="text-2xl font-bold text-white mt-8 mb-4">Labeling the Boxes</h2>
-<p class="text-slate-300 leading-relaxed mb-4">So how does technology actually stop leaks? It starts with organization. Imagine you are moving house. If you throw everything into unmarked boxes, you won&#039;t know which one has your fine china and which one has your old socks.</p>
-<p class="text-slate-300 leading-relaxed mb-4">Companies use technology to &quot;classify&quot; data. Software scans through millions of files and tags them: &quot;This is a public marketing flyer&quot; vs. &quot;This is a private patient record.&quot; Once the computer knows what the file is, it can automatically apply rules to it, like stopping it from being emailed outside the company.</p>
-<h2 class="text-2xl font-bold text-white mt-8 mb-4">Where the Leaks Start</h2>
-<p class="text-slate-300 leading-relaxed mb-4">Surprisingly, the biggest risk to data privacy is usually... us. Well-meaning employees are responsible for a huge chunk of data leaks. It's the person who uploads a sensitive work document to a public cloud server so they can work on it from home. It's the HR manager who accidentally emails a salary spreadsheet to the wrong &quot;John Smith.&quot; These aren&#039;t malicious acts; they are just human errors.</p>
-<h2 class="text-2xl font-bold text-white mt-8 mb-4">When Bad Actors Get Involved</h2>
-<p class="text-slate-300 leading-relaxed mb-4">Of course, there are bad guys too. Attackers know that the easiest way to get data isn&#039;t to break the encryption, but to trick a human into handing it over. They use &quot;phishing&quot;&mdash;fake emails that look real&mdash;to get you to type in your password or download a virus. Once they are in, they look for that sensitive data we mentioned earlier so they can hold it for ransom.</p>
-<h2 class="text-2xl font-bold text-white mt-8 mb-4">The Fire Drill Approach</h2>
-<p class="text-slate-300 leading-relaxed mb-4">Organizations are learning that they can&#039;t stop every single accident. So, they plan for the worst. This is called an &quot;Incident Response Plan.&quot;</p>
-<p class="text-slate-300 leading-relaxed mb-4">Think of it like a fire drill. Companies decide ahead of time exactly who needs to do what if data goes missing. Who calls the lawyers? Who fixes the computer? Who tells the customers? By practicing this &quot;fire drill,&quot; they can stop a small leak from turning into a flood.</p>
-<h2 class="text-2xl font-bold text-white mt-8 mb-4">How AI Sorts the Pile</h2>
-<p class="text-slate-300 leading-relaxed mb-4">This is where Artificial Intelligence is becoming a huge help. There is simply too much data for humans to sort through manually. We can&#039;t check every single email to see if it contains a credit card number.</p>
-<p class="text-slate-300 leading-relaxed mb-4">AI tools act like a super-fast librarian. They can read through millions of documents in seconds, spot the sensitive ones, and lock them down automatically. They help us see what we have so we can protect it properly.</p>
-<h2 class="text-2xl font-bold text-white mt-8 mb-4">Taking Control</h2>
-<p class="text-slate-300 leading-relaxed mb-4">The big takeaway here is that data privacy isn&#039;t something that just happens to you; it's something you participate in.</p>
-<p class="text-slate-300 leading-relaxed mb-4">Whether it's enabling that two-step login code on your email, checking your privacy settings on social media, or just pausing for one second before you send a file, you are the best defense system there is. We can't seal every crack in the digital pipes, but by being aware, we can keep our most valuable secrets safe.</p>
+<h2 class="text-2xl font-bold text-slate-900 mt-8 mb-4">Labeling the Boxes</h2>
+<p class="text-slate-700 leading-relaxed mb-4">So how does technology actually stop leaks? It starts with organization. Imagine you are moving house. If you throw everything into unmarked boxes, you won&#039;t know which one has your fine china and which one has your old socks.</p>
+<p class="text-slate-700 leading-relaxed mb-4">Companies use technology to &quot;classify&quot; data. Software scans through millions of files and tags them: &quot;This is a public marketing flyer&quot; vs. &quot;This is a private patient record.&quot; Once the computer knows what the file is, it can automatically apply rules to it, like stopping it from being emailed outside the company.</p>
+<h2 class="text-2xl font-bold text-slate-900 mt-8 mb-4">Where the Leaks Start</h2>
+<p class="text-slate-700 leading-relaxed mb-4">Surprisingly, the biggest risk to data privacy is usually... us. Well-meaning employees are responsible for a huge chunk of data leaks. It's the person who uploads a sensitive work document to a public cloud server so they can work on it from home. It's the HR manager who accidentally emails a salary spreadsheet to the wrong &quot;John Smith.&quot; These aren&#039;t malicious acts; they are just human errors.</p>
+<h2 class="text-2xl font-bold text-slate-900 mt-8 mb-4">When Bad Actors Get Involved</h2>
+<p class="text-slate-700 leading-relaxed mb-4">Of course, there are bad guys too. Attackers know that the easiest way to get data isn&#039;t to break the encryption, but to trick a human into handing it over. They use &quot;phishing&quot;&mdash;fake emails that look real&mdash;to get you to type in your password or download a virus. Once they are in, they look for that sensitive data we mentioned earlier so they can hold it for ransom.</p>
+<h2 class="text-2xl font-bold text-slate-900 mt-8 mb-4">The Fire Drill Approach</h2>
+<p class="text-slate-700 leading-relaxed mb-4">Organizations are learning that they can&#039;t stop every single accident. So, they plan for the worst. This is called an &quot;Incident Response Plan.&quot;</p>
+<p class="text-slate-700 leading-relaxed mb-4">Think of it like a fire drill. Companies decide ahead of time exactly who needs to do what if data goes missing. Who calls the lawyers? Who fixes the computer? Who tells the customers? By practicing this &quot;fire drill,&quot; they can stop a small leak from turning into a flood.</p>
+<h2 class="text-2xl font-bold text-slate-900 mt-8 mb-4">How AI Sorts the Pile</h2>
+<p class="text-slate-700 leading-relaxed mb-4">This is where Artificial Intelligence is becoming a huge help. There is simply too much data for humans to sort through manually. We can&#039;t check every single email to see if it contains a credit card number.</p>
+<p class="text-slate-700 leading-relaxed mb-4">AI tools act like a super-fast librarian. They can read through millions of documents in seconds, spot the sensitive ones, and lock them down automatically. They help us see what we have so we can protect it properly.</p>
+<h2 class="text-2xl font-bold text-slate-900 mt-8 mb-4">Taking Control</h2>
+<p class="text-slate-700 leading-relaxed mb-4">The big takeaway here is that data privacy isn&#039;t something that just happens to you; it's something you participate in.</p>
+<p class="text-slate-700 leading-relaxed mb-4">Whether it's enabling that two-step login code on your email, checking your privacy settings on social media, or just pausing for one second before you send a file, you are the best defense system there is. We can't seal every crack in the digital pipes, but by being aware, we can keep our most valuable secrets safe.</p>
 
         </article>
 
-        <div class="mt-16 pt-8 border-t border-white/10">
-            <a href="../insights.html" class="text-slate-400 hover:text-white transition-colors"> Back to all insights</a>
+        <div class="mt-16 pt-8 border-t border-white/10 flex justify-between items-center">
+            <a href="../insights.html" class="group inline-flex items-center gap-2 text-slate-300 hover:text-white transition-colors">
+                <span class="material-symbols-outlined text-sm group-hover:-translate-x-1 transition-transform">arrow_back</span>
+                Back to Insights
+            </a>
+        </div>
+        
+        <!-- Subscribe Section -->
+        <div class="mt-20">
+            <div class="bg-slate-900/90 backdrop-blur-md border border-indigo-500/20 rounded-[2rem] p-12 text-center relative overflow-hidden shadow-2xl">
+                <div class="absolute top-0 right-0 w-64 h-64 bg-primary/10 blur-[100px] rounded-full -mr-32 -mt-32"></div>
+                <div class="absolute bottom-0 left-0 w-64 h-64 bg-brand-blue/10 blur-[100px] rounded-full -ml-32 -mb-32"></div>
+                <div class="relative z-10">
+                    <div class="w-12 h-12 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center mx-auto mb-6">
+                        <span class="material-symbols-outlined text-primary">mail</span>
+                    </div>
+                    <h2 class="text-3xl font-display font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-indigo-700 to-blue-800">Stay Ahead of Security & AI Risks</h2>
+                    <p class="text-slate-400 mb-10 max-w-lg mx-auto">
+                        Subscribe to receive our bi-weekly Security &amp; AI Intelligence Report, delivered directly to your inbox.
+                    </p>
+                    <form class="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+                        <input class="flex-1 bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:ring-1 focus:ring-primary focus:border-primary transition-all outline-none" placeholder="Enter your email" required="" type="email"/>
+                        <button class="bg-primary text-white px-8 py-3 rounded-xl font-bold text-sm uppercase tracking-wider hover:bg-indigo-500 hover:shadow-lg hover:shadow-primary/20 transition-all" type="submit">Join Community</button>
+                    </form>
+                    <p class="mt-4 text-[10px] text-slate-500 uppercase tracking-widest">NO SPAM. JUST INTELLIGENCE. UNSUBSCRIBE ANYTIME.</p>
+                </div>
+            </div>
         </div>
     </main>
 
+    <!-- Bottom Nav -->
+    <nav class="fixed bottom-0 w-full z-50 bg-white/90 backdrop-blur-lg border-t border-slate-200 safe-area-bottom">
+        <div class="flex items-center justify-around px-2 py-3 pb-6 md:pb-3">
+            <a class="flex flex-col items-center gap-1 group w-16 text-slate-400 hover:text-slate-900 transition-colors" href="../index.html">
+                <div class="p-1 rounded-full group-hover:bg-slate-50 transition-colors">
+                    <span class="material-symbols-outlined text-2xl">home</span>
+                </div>
+                <span class="text-[10px] font-medium">AtlasSecurity</span>
+            </a>
+            <a class="flex flex-col items-center gap-1 group w-16 text-slate-400 hover:text-slate-900 transition-colors" href="../about.html">
+                <div class="p-1 rounded-full group-hover:bg-slate-50 transition-colors">
+                    <span class="material-symbols-outlined text-2xl">info</span>
+                </div>
+                <span class="text-[10px] font-medium">About</span>
+            </a>
+            <a class="flex flex-col items-center gap-1 group w-16" href="../insights.html">
+                <div class="p-1 rounded-full bg-blue-50 transition-colors">
+                    <span class="material-symbols-outlined text-2xl text-primary">article</span>
+                </div>
+                <span class="text-[10px] font-bold text-primary whitespace-nowrap text-center">Tech Insights</span>
+            </a>
+        </div>
+    </nav>
+
+    <script>
+        const menuButton = document.getElementById('menu-button');
+        const menu = document.getElementById('menu');
+
+        menuButton.addEventListener('click', () => {
+            menu.classList.toggle('hidden');
+        });
+    </script>
 </body>
 </html>
