@@ -180,3 +180,21 @@ body.dark .featured-section {
 .categories-scroll::-webkit-scrollbar {
     display: none;
 }
+
+/* List Styling - Fix for bullet points */
+ul {
+  list-style-type: disc !important;
+  padding-left: 20px !important;
+  margin: 10px 0 !important;
+}
+
+ol {
+  list-style-type: decimal !important;
+  padding-left: 20px !important;
+  margin: 10px 0 !important;
+}
+
+li {
+  margin: 5px 0;
+  display: list-item !important;
+}

@@ -125,100 +125,134 @@ function getCategoryColor(category) {
  */
 function extractFormattedContent(body, endIndex) {
   var html = [];
-  var listState = { active: false, type: null };
-  var numChildren = body.getNumChildren();
-  var paragraphCount = 0;
-
-  for (var i = 0; i < numChildren; i++) {
-    var child = body.getChild(i);
-    var type = child.getType();
+  var inList = false;
+  var listType = null; // 'ul' or 'ol'
+  var titleFound = false;
+  
+  var paragraphs = body.getParagraphs();
+  
+  for (var i = 0; i < endIndex && i < paragraphs.length; i++) {
+    var p = paragraphs[i];
+    var text = p.getText();
+    var trimmedText = text.trim();
     
-    // Check if we reached the limit (only counts PARAGRAPH elements to match endIndex)
-    if (type === DocumentApp.ElementType.PARAGRAPH) {
-      if (paragraphCount === endIndex) break;
-      paragraphCount++;
-    }
-
-    var text = "";
-    var heading = DocumentApp.ParagraphHeading.NORMAL;
-    var attrs = {};
-    var isListItem = false;
-    var glyphType = null;
-
-    if (type === DocumentApp.ElementType.PARAGRAPH) {
-      var p = child.asParagraph();
-      text = p.getText();
-      heading = p.getHeading();
-      attrs = p.getAttributes();
-    } else if (type === DocumentApp.ElementType.LIST_ITEM) {
-      var l = child.asListItem();
-      text = l.getText();
-      attrs = l.getAttributes();
-      isListItem = true;
-      glyphType = l.getGlyphType();
-    } else {
-      continue; // Skip tables, images, etc.
-    }
-
-    // Skip empty lines but allow them to break lists
-    if (!text.trim()) {
-      if (listState.active) {
-        html.push('</' + listState.type + '>');
-        listState.active = false;
-        listState.type = null;
+    if (!trimmedText) {
+      // Close any open list
+      if (inList) {
+        html.push('</' + listType + '>');
+        inList = false;
+        listType = null;
       }
+      html.push('<p>&nbsp;</p>');
       continue;
     }
-
-    text = fixEncoding(text.trim());
     
-    // Formatting
-    var isBold = attrs[DocumentApp.Attribute.BOLD] === true;
-    var isItalic = attrs[DocumentApp.Attribute.ITALIC] === true;
+    // Check for bullet or numbered list
+    var bulletMatch = trimmedText.match(/^([\u2022\u25E6\u25AAo\-*])\s*(.+)/);
+    var numberMatch = trimmedText.match(/^(\d+[\.\)])\s*(.+)/);
     
-    var content = text;
-    if (isBold) content = '<strong>' + content + '</strong>';
-    if (isItalic) content = '<em>' + content + '</em>';
-
-    if (isListItem) {
-      var isUl = glyphType === DocumentApp.GlyphType.BULLET || 
-                 glyphType === DocumentApp.GlyphType.HOLLOW_BULLET || 
-                 glyphType === DocumentApp.GlyphType.SQUARE_BULLET;
-      var currentListType = isUl ? 'ul' : 'ol';
-
-      if (!listState.active) {
-        html.push('<' + currentListType + '>');
-        listState.active = true;
-        listState.type = currentListType;
-      } else if (listState.type !== currentListType) {
-        // Close old list, start new
-        html.push('</' + listState.type + '>');
-        html.push('<' + currentListType + '>');
-        listState.type = currentListType;
+    if (bulletMatch) {
+      // It's a bullet point
+      if (!inList || listType !== 'ul') {
+        if (inList) html.push('</' + listType + '>');
+        html.push('<ul>');
+        inList = true;
+        listType = 'ul';
       }
+      var contentStr = bulletMatch[2];
+      var startIdx = text.lastIndexOf(contentStr);
+      var content = getFormattedText(p, startIdx);
       html.push('<li>' + content + '</li>');
-    } else {
-      // Close list if open
-      if (listState.active) {
-        html.push('</' + listState.type + '>');
-        listState.active = false;
-        listState.type = null;
+      
+    } else if (numberMatch) {
+      // It's a numbered item
+      if (!inList || listType !== 'ol') {
+        if (inList) html.push('</' + listType + '>');
+        html.push('<ol>');
+        inList = true;
+        listType = 'ol';
       }
-
+      var contentStr = numberMatch[2];
+      var startIdx = text.lastIndexOf(contentStr);
+      var content = getFormattedText(p, startIdx);
+      html.push('<li>' + content + '</li>');
+      
+    } else {
+      // Regular paragraph
+      if (inList) {
+        html.push('</' + listType + '>');
+        inList = false;
+        listType = null;
+      }
+      
       var tag = 'p';
-      if (heading === DocumentApp.ParagraphHeading.HEADING1) tag = 'h1';
+      var heading = p.getHeading();
+      
+      if (heading === DocumentApp.ParagraphHeading.HEADING1) {
+        if (!titleFound) {
+          titleFound = true;
+          continue;
+        }
+        tag = 'h1';
+      }
       else if (heading === DocumentApp.ParagraphHeading.HEADING2) tag = 'h2';
       else if (heading === DocumentApp.ParagraphHeading.HEADING3) tag = 'h3';
       
-      html.push('<' + tag + '>' + content + '</' + tag + '>');
+      html.push('<' + tag + '>' + getFormattedText(p) + '</' + tag + '>');
     }
   }
-
-  if (listState.active) {
-    html.push('</' + listState.type + '>');
+  
+  // Close any remaining list
+  if (inList) {
+    html.push('</' + listType + '>');
   }
-
+  
   return html.join('\n');
+}
+
+function getFormattedText(paragraph, startOffset) {
+  var text = paragraph.getText();
+  if (!text) return "";
+  
+  var textObj = paragraph.editAsText();
+  var startIndex = startOffset || 0;
+  var result = "";
+  var inBold = false;
+  var inItalic = false;
+  
+  for (var i = startIndex; i < text.length; i++) {
+    var attrs = textObj.getAttributes(i);
+    var char = text[i];
+    
+    var isBold = attrs[DocumentApp.Attribute.BOLD] === true;
+    var isItalic = attrs[DocumentApp.Attribute.ITALIC] === true;
+    
+    // Handle bold transitions
+    if (isBold && !inBold) {
+      result += '<strong>';
+      inBold = true;
+    } else if (!isBold && inBold) {
+      result += '</strong>';
+      inBold = false;
+    }
+    
+    // Handle italic transitions
+    if (isItalic && !inItalic) {
+      result += '<em>';
+      inItalic = true;
+    } else if (!isItalic && inItalic) {
+      result += '</em>';
+      inItalic = false;
+    }
+    
+    result += char;
+  }
+  
+  // Close any open tags
+  if (inBold) result += '</strong>';
+  if (inItalic) result += '</em>';
+  
+  return fixEncoding(result);
 }
 
 /**
@@ -228,6 +262,7 @@ function extractFormattedContent(body, endIndex) {
  * @return {string} The complete HTML document.
  */
 function generateArticleHTML(data) {
+  // Build category badges
   var badgesHTML = "";
   if (data.categories && data.categories.length > 0) {
     badgesHTML = data.categories.map(function(cat) {
@@ -236,98 +271,85 @@ function generateArticleHTML(data) {
     }).join(' ');
   }
 
-  return `<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <meta name="description" content="${data.excerpt}"/>
-    <title>${data.title} - AtlasSecurity</title>
-    <link href="https://fonts.googleapis.com" rel="preconnect"/>
-    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
-    <style>
-        body {
-            background-color: #020617;
-            background-image: radial-gradient(at 0% 0%, rgba(49, 46, 129, 0.4) 0px, transparent 50%),
-                            radial-gradient(at 100% 0%, rgba(79, 70, 229, 0.15) 0px, transparent 50%);
-            background-attachment: fixed;
-            color: #f8fafc;
-            font-family: 'Inter', sans-serif;
-        }
-        .font-display { font-family: 'Plus Jakarta Sans', sans-serif; }
-        .glass-content {
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(12px);
-            border-radius: 1rem;
-            padding: 2.5rem;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            max-width: 800px;
-            margin: 2rem auto;
-        }
-        .glass-content h1, .glass-content h2, .glass-content h3, 
-        .glass-content h4, .glass-content h5, .glass-content h6 {
-            color: #1a1a1a;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            font-weight: 700;
-            margin-top: 1.5em;
-            margin-bottom: 0.5em;
-        }
-        .glass-content p, .glass-content li {
-            color: #1a1a1a;
-            line-height: 1.7;
-            margin-bottom: 1em;
-        }
-        .glass-content strong { color: #000000; font-weight: 700; }
-        .glass-content a { color: #2563eb; text-decoration: underline; }
-        .glass-nav {
-            background: rgba(2, 6, 23, 0.8);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-    </style>
-</head>
-<body>
-    <!-- Navigation -->
-    <nav class="fixed top-0 w-full z-50 glass-nav transition-all duration-300">
-        <div class="flex items-center justify-center px-5 py-4">
-            <a href="../index.html" class="flex items-center gap-2">
-                <span class="material-symbols-outlined text-indigo-500" style="font-size: 32px;">security</span>
-                <h1 class="text-2xl font-display font-bold tracking-tight text-white">Atlas<span class="text-indigo-500">SECURITY</span></h1>
-            </a>
-        </div>
-    </nav>
-
-    <main class="relative z-10 pt-32 pb-24 px-4">
-        <!-- Article Header -->
-        <header class="max-w-4xl mx-auto text-center mb-12">
-            <div class="flex flex-wrap justify-center gap-2 mb-6">
-                ${badgesHTML}
-            </div>
-            <h1 class="text-4xl md:text-5xl font-display font-bold text-white mb-6 leading-tight">${data.title}</h1>
-            <div class="flex items-center justify-center gap-4 text-slate-400 text-sm font-medium">
-                <span>${data.dateDisplay}</span>
-            </div>
-        </header>
-
-        <!-- Article Content -->
-        <article class="glass-content">
-            ${data.content}
-        </article>
-
-        <!-- Footer / Back Link -->
-        <div class="max-w-4xl mx-auto mt-12 text-center">
-            <a href="../insights.html" class="inline-flex items-center gap-2 text-slate-400 hover:text-white transition-colors font-medium">
-                <span class="material-symbols-outlined">arrow_back</span>
-                Back to Insights
-            </a>
-        </div>
-    </main>
-</body>
-</html>`;
+  // Return complete HTML using string concatenation (avoid template literal issues)
+  return '<!DOCTYPE html>' +
+    '<html lang="en">' +
+    '<head>' +
+      '<meta charset="UTF-8">' +
+      '<meta name="viewport" content="width=device-width, initial-scale=1.0">' +
+      '<title>' + data.title + ' - AtlasSecurity</title>' +
+      '<script src="https://cdn.tailwindcss.com"></script>' +
+      '<link href="https://fonts.googleapis.com/css2?family=Inter&family=Plus+Jakarta+Sans&family=Material+Symbols+Outlined" rel="stylesheet">' +
+      '<style>' +
+        'body { background-color: #020617; color: #f8fafc; font-family: "Inter", sans-serif; }' +
+        '.glass-content { background: rgba(255,255,255,0.9); backdrop-filter: blur(12px); border-radius: 1rem; padding: 2.5rem; box-shadow: 0 8px 32px rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.6); max-width: 800px; margin: 2rem auto; }' +
+        '.glass-content h1, .glass-content h2, .glass-content h3, .glass-content p, .glass-content li { color: #1a1a1a !important; }' +
+        '.glass-content strong { font-weight: 700; }' +
+        '.video-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2; }' +
+        '.video-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(2,6,23,0.6); z-index: -1; }' +
+      '</style>' +
+    '</head>' +
+    '<body class="text-slate-100 min-h-screen font-sans">' +
+      '<!-- Video Background -->' +
+      '<video autoplay muted loop playsinline class="video-bg">' +
+        '<source src="../images/newvid.mp4" type="video/mp4">' +
+      '</video>' +
+      '<div class="video-overlay"></div>' +
+      
+      '<!-- Fixed Header -->' +
+      '<nav class="fixed top-0 w-full z-50 bg-slate-900/80 backdrop-blur-md border-b border-white/10">' +
+        '<div class="flex items-center justify-between px-6 py-4 max-w-7xl mx-auto">' +
+          '<a href="../index.html" class="flex items-center gap-2">' +
+            '<span class="material-symbols-outlined text-indigo-500 text-3xl">security</span>' +
+            '<span class="text-2xl font-bold text-white">Atlas<span class="text-indigo-500">SECURITY</span></span>' +
+          '</a>' +
+          '<div class="flex items-center gap-6">' +
+            '<a href="../index.html" class="text-slate-300 hover:text-white transition">Home</a>' +
+            '<a href="../about.html" class="text-slate-300 hover:text-white transition">About</a>' +
+            '<a href="../insights.html" class="text-slate-300 hover:text-white transition">Insights</a>' +
+          '</div>' +
+        '</div>' +
+      '</nav>' +
+      
+      '<!-- Main Content -->' +
+      '<main class="relative z-10 pt-24 pb-32 px-4">' +
+        '<header class="max-w-4xl mx-auto text-center mb-12 pt-8">' +
+          '<div class="flex flex-wrap justify-center gap-2 mb-6">' + badgesHTML + '</div>' +
+          '<h1 class="text-4xl md:text-5xl font-bold text-white mb-4 leading-tight">' + data.title + '</h1>' +
+          '<p class="text-slate-400">' + data.dateDisplay + '</p>' +
+        '</header>' +
+        
+        '<article class="glass-content">' +
+          data.content +
+        '</article>' +
+        
+        '<div class="max-w-4xl mx-auto mt-12 text-center">' +
+          '<a href="../insights.html" class="inline-flex items-center gap-2 text-slate-400 hover:text-white transition">' +
+            '<span class="material-symbols-outlined">arrow_back</span>' +
+            'Back to all Insights' +
+          '</a>' +
+        '</div>' +
+      '</main>' +
+      
+      '<!-- Fixed Footer -->' +
+      '<footer class="fixed bottom-0 w-full z-50 bg-slate-900/90 backdrop-blur-md border-t border-white/10">' +
+        '<div class="flex justify-around items-center py-3 max-w-md mx-auto">' +
+          '<a href="../index.html" class="flex flex-col items-center gap-1 text-slate-400 hover:text-white transition">' +
+            '<span class="material-symbols-outlined text-xl">home</span>' +
+            '<span class="text-xs">Home</span>' +
+          '</a>' +
+          '<a href="../about.html" class="flex flex-col items-center gap-1 text-slate-400 hover:text-white transition">' +
+            '<span class="material-symbols-outlined text-xl">info</span>' +
+            '<span class="text-xs">About</span>' +
+          '</a>' +
+          '<a href="../insights.html" class="flex flex-col items-center gap-1 text-indigo-400 transition">' +
+            '<span class="material-symbols-outlined text-xl">article</span>' +
+            '<span class="text-xs">Tech Insights</span>' +
+          '</a>' +
+        '</div>' +
+      '</footer>' +
+    '</body>' +
+    '</html>';
 }
 
 /**
@@ -651,4 +673,4 @@ function calculateReadTime(text) {
 }
 /**
  * Google Apps Script Blog Publisher
- 
+ */
