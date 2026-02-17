@@ -123,16 +123,19 @@ function getCategoryColor(category) {
  * @param {number} endIndex - The index of the paragraph (in getParagraphs array) to stop before.
  * @return {string} The formatted HTML content.
  */
-function extractFormattedContent(body, endIndex) {
+function extractFormattedContent(body, endIndex, skipTitle) {
   var html = [];
   var inList = false;
   var listType = null; // 'ul' or 'ol'
-  var titleFound = false;
   
   var paragraphs = body.getParagraphs();
   
   for (var i = 0; i < endIndex && i < paragraphs.length; i++) {
     var p = paragraphs[i];
+    
+    if (skipTitle && i === 0) {
+      continue;
+    }
     var text = p.getText();
     var trimmedText = text.trim();
     
@@ -188,11 +191,7 @@ function extractFormattedContent(body, endIndex) {
       var tag = 'p';
       var heading = p.getHeading();
       
-      if (heading === DocumentApp.ParagraphHeading.HEADING1) {
-        if (!titleFound) {
-          titleFound = true;
-          continue;
-        }
+      if (heading === DocumentApp.ParagraphHeading.HEADING1 || heading === DocumentApp.ParagraphHeading.TITLE) {
         tag = 'h1';
       }
       else if (heading === DocumentApp.ParagraphHeading.HEADING2) tag = 'h2';
@@ -321,6 +320,7 @@ function generateArticleHTML(data) {
         
         '<article class="glass-content">' +
           data.content +
+          '<div style="text-align: right; margin-top: 32px; color: #64748b;">' + data.dateDisplay + '</div>' +
         '</article>' +
         
         '<div class="max-w-4xl mx-auto mt-12 text-center">' +
@@ -595,9 +595,6 @@ function publishFullArticle() {
     return;
   }
 
-  // 3. Extract Formatted Content
-  var contentHtml = extractFormattedContent(body, dateInfo.index);
-  
   // 4. Extract Title & Excerpt
   var paragraphs = body.getParagraphs();
   var title = "";
@@ -639,6 +636,10 @@ function publishFullArticle() {
   excerpt = fixEncoding(excerpt).substring(0, 160).trim();
   if (excerpt.length > 0) excerpt += "...";
 
+  // 3. Extract Formatted Content
+  var startIndex = titleFoundIndex + 1;
+  var contentHtml = extractFormattedContent(body, dateInfo.index, startIndex);
+
   // 5. Metadata
   var slug = generateSlug(title);
   var readTime = calculateReadTime(rawTextForReadTime);
@@ -657,6 +658,7 @@ function publishFullArticle() {
 
     var uploadResult = createOrUpdateGitHubFile("articles/" + slug + ".html", fullArticleHtml, "Publish: " + title, settings);
     updateInsightsHtml(cardHtml, settings);
+    updateSitemap(slug, settings);
     
     ui.alert('Published Successfully!\n\nArticle URL: ' + uploadResult.url);
   } catch (e) {
@@ -672,5 +674,49 @@ function calculateReadTime(text) {
   return minutes + " MIN READ";
 }
 /**
- * Google Apps Script Blog Publisher
+ * Updates the sitemap.xml file with the new article URL.
+ *
+ * @param {string} slug - The article slug.
+ * @param {Object} settings - Object containing token, repo, and branch.
  */
+function updateSitemap(slug, settings) {
+  var fileName = "sitemap.xml";
+  var fileData = getGitHubFile(fileName, settings);
+  var sitemapContent = "";
+  var today = new Date().toISOString().split('T')[0];
+  var articleUrl = "https://hashp.github.io/gitAtlas/articles/" + slug + ".html"; // Adjust base URL as needed
+
+  if (fileData) {
+    sitemapContent = fileData.content;
+    // Check if URL already exists
+    if (sitemapContent.indexOf(articleUrl) === -1) {
+      // Insert new url entry before </urlset>
+      var newEntry = "  <url>\n    <loc>" + articleUrl + "</loc>\n    <lastmod>" + today + "</lastmod>\n    <changefreq>monthly</changefreq>\n    <priority>0.8</priority>\n  </url>\n";
+      sitemapContent = sitemapContent.replace("</urlset>", newEntry + "</urlset>");
+    } else {
+      // Update lastmod if URL exists
+      var regex = new RegExp("<loc>" + articleUrl.replace(/\//g, "\\/") + "<\\/loc>\\s*<lastmod>.*?<\\/lastmod>", "s");
+      var updatedEntry = "<loc>" + articleUrl + "</loc>\n    <lastmod>" + today + "</lastmod>";
+      sitemapContent = sitemapContent.replace(regex, updatedEntry);
+    }
+  } else {
+    // Create new sitemap
+    sitemapContent = '<?xml version="1.0" encoding="UTF-8"?>\n' +
+      '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
+      '  <url>\n' +
+      '    <loc>https://hashp.github.io/gitAtlas/index.html</loc>\n' +
+      '    <lastmod>' + today + '</lastmod>\n' +
+      '    <changefreq>daily</changefreq>\n' +
+      '    <priority>1.0</priority>\n' +
+      '  </url>\n' +
+      '  <url>\n' +
+      '    <loc>' + articleUrl + '</loc>\n' +
+      '    <lastmod>' + today + '</lastmod>\n' +
+      '    <changefreq>monthly</changefreq>\n' +
+      '    <priority>0.8</priority>\n' +
+      '  </url>\n' +
+      '</urlset>';
+  }
+
+  createOrUpdateGitHubFile(fileName, sitemapContent, "Update sitemap.xml", settings);
+}
