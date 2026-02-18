@@ -123,19 +123,16 @@ function getCategoryColor(category) {
  * @param {number} endIndex - The index of the paragraph (in getParagraphs array) to stop before.
  * @return {string} The formatted HTML content.
  */
-function extractFormattedContent(body, endIndex, skipTitle) {
+function extractFormattedContent(body, endIndex, startIndex) {
   var html = [];
   var inList = false;
   var listType = null; // 'ul' or 'ol'
   
   var paragraphs = body.getParagraphs();
   
-  for (var i = 0; i < endIndex && i < paragraphs.length; i++) {
+  for (var i = startIndex || 0; i < endIndex && i < paragraphs.length; i++) {
     var p = paragraphs[i];
     
-    if (skipTitle && i === 0) {
-      continue;
-    }
     var text = p.getText();
     var trimmedText = text.trim();
     
@@ -151,7 +148,7 @@ function extractFormattedContent(body, endIndex, skipTitle) {
     }
     
     // Check for bullet or numbered list
-    var bulletMatch = trimmedText.match(/^([\u2022\u25E6\u25AAo\-*])\s*(.+)/);
+    var bulletMatch = trimmedText.match(/^([\u2022\u25E6\u25AA\u25CFo\-*])\s*(.+)/);
     var numberMatch = trimmedText.match(/^(\d+[\.\)])\s*(.+)/);
     
     if (bulletMatch) {
@@ -284,6 +281,10 @@ function generateArticleHTML(data) {
         '.glass-content { background: rgba(255,255,255,0.9); backdrop-filter: blur(12px); border-radius: 1rem; padding: 2.5rem; box-shadow: 0 8px 32px rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.6); max-width: 800px; margin: 2rem auto; }' +
         '.glass-content h1, .glass-content h2, .glass-content h3, .glass-content p, .glass-content li { color: #1a1a1a !important; }' +
         '.glass-content strong { font-weight: 700; }' +
+        '.glass-content ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1rem; }' +
+        '.glass-content ol { list-style-type: decimal; padding-left: 1.5rem; margin-bottom: 1rem; }' +
+        '.glass-content li { margin-bottom: 0.5rem; }' +
+        '.glass-content p { margin-bottom: 1.25rem; line-height: 1.7; }' +
         '.video-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2; }' +
         '.video-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(2,6,23,0.6); z-index: -1; }' +
       '</style>' +
