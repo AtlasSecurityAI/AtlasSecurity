@@ -148,7 +148,14 @@ function extractFormattedContent(body, endIndex, startIndex) {
     }
     
     // Check for bullet or numbered list
-    var bulletMatch = trimmedText.match(/^([\u2022\u25E6\u25AA\u25CFo\-*])\s*(.+)/);
+    // Debug logging to diagnose bullet detection issues
+    if (trimmedText.length > 0) {
+      Logger.log("Analyzing paragraph: '" + trimmedText + "'");
+      Logger.log("First char code: " + trimmedText.charCodeAt(0));
+      var isMatch = /^([\u2022\u25E6\u25AA\u25CF\-*])\s*(.+)/.test(trimmedText);
+      Logger.log("Bullet Regex Match: " + isMatch);
+    }
+    var bulletMatch = trimmedText.match(/^([\u2022\u25E6\u25AA\u25CF\-*])\s*(.+)/);
     var numberMatch = trimmedText.match(/^(\d+[\.\)])\s*(.+)/);
     
     if (bulletMatch) {
