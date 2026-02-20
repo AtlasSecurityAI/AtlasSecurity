@@ -1,3 +1,8 @@
+// ==========================================
+// SITE CONFIGURATION
+// ==========================================
+var BASE_URL = "https://atlassecurityai.github.io/AtlasSecurity";
+
 /**
  * Utility functions for the Google Apps Script Blog Publisher.
  */
@@ -692,7 +697,7 @@ function updateSitemap(slug, settings) {
   var fileData = getGitHubFile(fileName, settings);
   var sitemapContent = "";
   var today = new Date().toISOString().split('T')[0];
-  var articleUrl = "https://hashp.github.io/gitAtlas/articles/" + slug + ".html"; // Adjust base URL as needed
+  var articleUrl = BASE_URL + "/articles/" + slug + ".html"; // Adjust base URL as needed
 
   if (fileData) {
     sitemapContent = fileData.content;
@@ -712,7 +717,7 @@ function updateSitemap(slug, settings) {
     sitemapContent = '<?xml version="1.0" encoding="UTF-8"?>\n' +
       '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
       '  <url>\n' +
-      '    <loc>https://hashp.github.io/gitAtlas/index.html</loc>\n' +
+      '    <loc>' + BASE_URL + '/index.html</loc>\n' +
       '    <lastmod>' + today + '</lastmod>\n' +
       '    <changefreq>daily</changefreq>\n' +
       '    <priority>1.0</priority>\n' +
