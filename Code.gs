@@ -100,50 +100,38 @@ function extractFormattedContent(body, endIndex, startIndex) {
       continue;
     }
     
-    // Get next paragraph text for context
-    var nextText = "";
-    if (i + 1 < end && i + 1 < paragraphs.length) {
-      nextText = paragraphs[i + 1].getText().trim();
-    }
-    
     // DETECT LIST TYPE
     var isListItem = false;
     var isBullet = false;
     var detectedListType = 'ul';
+    var isNative = false;
     
-    // METHOD 1: Check if Google Docs considers this a list item (TRUE LISTS)
+    // METHOD 1: NATIVE LIST
     try {
-      var listItem = p.asListItem();
-      if (listItem != null) {
-        var glyphType = listItem.getGlyphType();
-        if (glyphType != null) {
-          isListItem = true;
-          var typeStr = glyphType.toString();
-          isBullet = (typeStr.indexOf('BULLET') !== -1) || 
-                     (typeStr.indexOf('UNORDERED') !== -1) ||
-                     (typeStr === 'DocumentApp.ListType.UNORDERED');
-          detectedListType = isBullet ? 'ul' : 'ol';
-          Logger.log("Para " + i + ": NATIVE LIST - type=" + typeStr + ", isBullet=" + isBullet);
+      if (p.getType() === DocumentApp.ElementType.LIST_ITEM) {
+        isListItem = true;
+        isNative = true;
+        var glyph = p.asListItem().getGlyphType();
+        if (glyph === DocumentApp.GlyphType.NUMBER) {
+          detectedListType = 'ol';
         }
+        Logger.log("Para " + i + ": NATIVE LIST");
       }
     } catch (e) {
-      // Not a list item - expected for regular paragraphs
+      // Not a native list item
     }
     
-    // METHOD 2: Check for bullet characters in text (for pasted bullets)
+    // METHOD 2: VISUAL BULLET
     if (!isListItem) {
       var bulletMatch = trimmed.match(/^(\s*)[•\-–—]\s+/);
       var numberMatch = trimmed.match(/^(\s*)\d+[\.\)]\s+/);
-      
-      // Fix: Treat "1. Heading" as H3, not list item
-      var isLikelyHeading = /^\d+\.\s+\w/.test(trimmed);
       
       if (bulletMatch) {
         isListItem = true;
         isBullet = true;
         detectedListType = 'ul';
         Logger.log("Para " + i + ": TEXT BULLET DETECTED");
-      } else if (numberMatch && !isLikelyHeading) {
+      } else if (numberMatch) {
         isListItem = true;
         isBullet = false;
         detectedListType = 'ol';
@@ -151,33 +139,21 @@ function extractFormattedContent(body, endIndex, startIndex) {
       }
     }
     
-    // METHOD 3: Heuristic "Ghost List" Detection
-    // Catches visual lists that are technically NORMAL_TEXT
-    if (!isListItem && p.getHeading() === DocumentApp.ParagraphHeading.NORMAL) {
-      var len = trimmed.length;
-      
-      // Heuristic thresholds (12-80 chars) to avoid "The End." (8 chars)
-      var isCandidateLength = len >= 12 && len <= 80;
-      var startsWithCap = /^[A-Z]/.test(trimmed);
-      
-      if (isCandidateLength && startsWithCap) {
-        var prevTrimmed = previousText.trim();
-        var prevEndsColon = prevTrimmed.endsWith(':');
-        
-        // Check if next paragraph also looks like list item (cluster detection)
-        var nextIsCandidate = false;
-        if (nextText) {
-          var nextLen = nextText.length;
-          nextIsCandidate = nextLen >= 12 && nextLen <= 80 && /^[A-Z]/.test(nextText);
-        }
-        
-        // Valid if: triggered by colon OR continuation of list OR start of cluster
-        if (prevEndsColon || nextIsCandidate || inList) {
-          isListItem = true;
-          isBullet = true;
-          detectedListType = 'ul'; // Ghost lists are usually bullets
-          Logger.log("Para " + i + ": GHOST LIST DETECTED (Colon=" + prevEndsColon + ", Cluster=" + nextIsCandidate + ", InList=" + inList + ")");
-        }
+    // METHOD 3: COLON TRIGGER (Ghost List)
+    if (!isListItem) {
+      if (isGhostListItem(text, previousText, p.getHeading())) {
+        isListItem = true;
+        isBullet = true;
+        detectedListType = 'ul';
+        Logger.log("Para " + i + ": GHOST LIST DETECTED (Colon Trigger)");
+      }
+    }
+    
+    // METHOD 4: NUMBERED HEADING VETO
+    if (isListItem && !isNative) {
+      if (/^\d+\.\s+\w/.test(trimmed)) {
+        isListItem = false;
+        Logger.log("Para " + i + ": VETOED (Numbered Heading)");
       }
     }
     
@@ -721,55 +697,21 @@ function diagnoseBulletCharacter() {
  * 1. Short length (12-80 characters)
  * 2. Starts with capital letter (A-Z)
  * 3. Follows intro text ending with ":"
- * 4. Appears in consecutive sequences (2+ items)
- * 5. Not a heading (NORMAL_TEXT only)
+ * 4. Not a heading (NORMAL_TEXT only)
  *
  * @param {string} currentText - The text of the current paragraph.
  * @param {string} previousText - The text of the previous paragraph.
- * @param {string} nextText - The text of the next paragraph.
  * @param {Object} headingType - The heading level of the current paragraph.
  * @return {boolean} True if the paragraph is likely a ghost list item.
  */
-function isGhostListItem(currentText, previousText, nextText, headingType) {
-  // Input validation: Ensure currentText is valid
-  if (currentText == null) return false;
+function isGhostListItem(currentText, previousText, headingType) {
+  if (!currentText) return false;
+  if (headingType !== DocumentApp.ParagraphHeading.NORMAL) return false;
   
-  // Heuristic 5: Not a heading (NORMAL_TEXT only)
-  // We strictly check against DocumentApp.ParagraphHeading.NORMAL
-  if (headingType !== DocumentApp.ParagraphHeading.NORMAL) {
-    return false;
-  }
-
   var trimmed = currentText.trim();
+  if (trimmed.length < 12 || trimmed.length > 80) return false;
+  if (!/^[A-Z]/.test(trimmed)) return false;
   
-  // Edge case: Empty text is not a list item
-  if (trimmed.length === 0) return false;
-
-  // Heuristic 1: Short length (12-80 characters)
-  if (trimmed.length < 12 || trimmed.length > 80) {
-    return false;
-  }
-
-  // Heuristic 2: Starts with capital letter (A-Z)
-  if (!/^[A-Z]/.test(trimmed)) {
-    return false;
-  }
-
-  // Context variables (handle null/undefined inputs safely)
   var prevTrimmed = previousText ? previousText.trim() : "";
-  var nextTrimmed = nextText ? nextText.trim() : "";
-
-  // Heuristic 3: Follows intro text ending with ":"
-  var followsColon = prevTrimmed.endsWith(':');
-
-  // Helper for Heuristic 4: Check if a neighbor text fits the list item profile
-  var looksLikeListItem = function(text) {
-    if (!text) return false;
-    var len = text.length;
-    return len >= 12 && len <= 80 && /^[A-Z]/.test(text);
-  };
-
-  // Heuristic 4: Appears in consecutive sequences (2+ items)
-  // Valid if: Triggered by colon OR Continuation of list OR Start of a cluster (lookahead)
-  return followsColon || looksLikeListItem(prevTrimmed) || looksLikeListItem(nextTrimmed);
+  return prevTrimmed.endsWith(':');
 }
