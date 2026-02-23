@@ -96,11 +96,7 @@ function extractFormattedContent(body, endIndex, startIndex) {
     
     // Skip empty paragraphs
     if (!trimmed) {
-      if (inList) {
-        htmlOutput.push('</' + currentListType + '>');
-        inList = false;
-        currentListType = null;
-      }
+      // Don't close list on empty paragraphs to allow spacing between items
       continue;
     }
     
@@ -139,12 +135,15 @@ function extractFormattedContent(body, endIndex, startIndex) {
       var bulletMatch = trimmed.match(/^(\s*)[•\-–—]\s+/);
       var numberMatch = trimmed.match(/^(\s*)\d+[\.\)]\s+/);
       
+      // Fix: Treat "1. Heading" as H3, not list item
+      var isLikelyHeading = /^\d+\.\s+\w/.test(trimmed);
+      
       if (bulletMatch) {
         isListItem = true;
         isBullet = true;
         detectedListType = 'ul';
         Logger.log("Para " + i + ": TEXT BULLET DETECTED");
-      } else if (numberMatch) {
+      } else if (numberMatch && !isLikelyHeading) {
         isListItem = true;
         isBullet = false;
         detectedListType = 'ol';
