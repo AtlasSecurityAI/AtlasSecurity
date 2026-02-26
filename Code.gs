@@ -696,10 +696,11 @@ function diagnoseBulletCharacter() {
  * Detects "Ghost List" items based on specific heuristics.
  * 
  * Heuristics:
- * 1. Short length (12-80 characters)
- * 2. Starts with capital letter (A-Z)
- * 3. Follows intro text ending with ":"
- * 4. Not a heading (NORMAL_TEXT only)
+ * 1. Context: Follows intro text ending with ":"
+ * 2. Structure: Starts with Capital letter
+ * 3. Exclusion: No definition separators ( - , – , — , : ) indicating a sentence
+ * 4. Exclusion: No common verbs (indicates sentence structure)
+ * 5. Length: Short word count (typically < 10 words)
  *
  * @param {string} currentText - The text of the current paragraph.
  * @param {string} previousText - The text of the previous paragraph.
@@ -711,11 +712,33 @@ function isGhostListItem(currentText, previousText, headingType) {
   if (headingType !== DocumentApp.ParagraphHeading.NORMAL) return false;
   
   var trimmed = currentText.trim();
-  if (trimmed.length < 12 || trimmed.length > 80) return false;
+  
+  // 1. Context Check: Previous paragraph must end with colon
+  var prevTrimmed = previousText ? previousText.trim() : "";
+  if (!prevTrimmed.endsWith(':')) return false;
+
+  // 2. Basic Formatting: Must start with Capital
   if (!/^[A-Z]/.test(trimmed)) return false;
   
-  var prevTrimmed = previousText ? previousText.trim() : "";
-  return prevTrimmed.endsWith(':');
+  // 3. Exclusion: Definition Separators (Fix for "Generative AI – Produces...")
+  // If text contains " – ", " — ", or ": " in the middle, it's a definition paragraph.
+  if (/ [:\-–—] /.test(trimmed)) return false;
+  
+  // 4. Exclusion: Common Verbs (Fix for "AI Systems – Autonomous...")
+  // Noun phrases (list items) rarely have these verbs. Sentences do.
+  var verbPattern = /\b(is|are|has|have|produces|generates|creates|uses|provides|can|consists)\b/i;
+  if (verbPattern.test(trimmed)) return false;
+  
+  // 5. Word Count Check
+  // List items are usually short (2-8 words). False positives are longer.
+  var wordCount = trimmed.split(/\s+/).length;
+  if (wordCount > 9) return false;
+  
+  // 6. Character Length Check
+  // Tightened range to exclude long sentences (User requested 2-6 words, we allow buffer)
+  if (trimmed.length < 3 || trimmed.length > 60) return false;
+  
+  return true;
 }
 
 /**
