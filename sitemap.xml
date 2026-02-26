@@ -144,4 +144,10 @@
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
+  <url>
+    <loc>https://atlassecurityai.github.io/AtlasSecurity/articles/3the-invisible-internet-how-zero-trust-secures-devices-that-don-t-use-wi-fi.html</loc>
+    <lastmod>2026-02-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
 </urlset>
