@@ -173,15 +173,16 @@ function extractFormattedContent(body, endIndex, startIndex) {
         currentListType = detectedListType;
       }
       
-      // Clean the text - remove bullet/number prefix
-      var cleanText = trimmed;
-      if (isBullet) {
-        cleanText = trimmed.replace(/^(\s*)[•\-–—]\s+/, '');
-      } else {
-        cleanText = trimmed.replace(/^(\s*)\d+[\.\)]\s+/, '');
+      // Calculate offset to strip bullet/number from formatted text
+      var contentOffset = 0;
+      if (!isNative) {
+        var match = text.match(/^(\s*)([•\-–—]|\d+[\.\)])\s+/);
+        if (match) {
+          contentOffset = match[0].length;
+        }
       }
       
-      htmlOutput.push('<li class="text-slate-300 leading-relaxed">' + fixEncoding(cleanText) + '</li>');
+      htmlOutput.push('<li class="text-slate-300 leading-relaxed">' + processFormattedText(p, contentOffset) + '</li>');
     }
     
     // NOT A LIST ITEM - close any open list and process as regular paragraph
@@ -219,7 +220,8 @@ function extractFormattedContent(body, endIndex, startIndex) {
         Logger.log("Para " + i + ": PROMOTED to h3 (looks like numbered heading)");
       }
       
-      htmlOutput.push('<' + tag + ' class="' + classes + '">' + fixEncoding(text) + '</' + tag + '>');
+      // FIXED: Removed duplicate push. Only using processFormattedText to ensure formatting is preserved.
+      htmlOutput.push('<' + tag + ' class="' + classes + '">' + processFormattedText(p) + '</' + tag + '>');
     }
     
     // Update previous text for next iteration context
@@ -714,4 +716,63 @@ function isGhostListItem(currentText, previousText, headingType) {
   
   var prevTrimmed = previousText ? previousText.trim() : "";
   return prevTrimmed.endsWith(':');
+}
+
+/**
+ * Extracts text with inline formatting (Bold, Italic, Link, etc.).
+ * Uses getTextAttributeIndices() for performance.
+ *
+ * @param {GoogleAppsScript.Document.Paragraph} element - The paragraph to process.
+ * @param {number} [startOffset=0] - Number of characters to skip at the start (for stripping bullets).
+ * @return {string} HTML string with formatting tags.
+ */
+function processFormattedText(element, startOffset) {
+  var textObj = element.editAsText();
+  var text = textObj.getText();
+  var indices = textObj.getTextAttributeIndices();
+  var html = "";
+  
+  // Default offset
+  startOffset = startOffset || 0;
+  
+  // Filter indices to only include those relevant to our content (after offset)
+  // We explicitly add the startOffset to ensure we begin processing exactly there
+  var processingIndices = [startOffset];
+  for (var i = 0; i < indices.length; i++) {
+    if (indices[i] > startOffset) {
+      processingIndices.push(indices[i]);
+    }
+  }
+  
+  for (var i = 0; i < processingIndices.length; i++) {
+    var start = processingIndices[i];
+    var end = (i + 1 < processingIndices.length) ? processingIndices[i+1] : text.length;
+    
+    if (start >= text.length) break;
+    
+    var partText = text.substring(start, end);
+    if (!partText) continue;
+    
+    var attrs = textObj.getAttributes(start);
+    var partHtml = partText;
+    
+    // Escape HTML special characters to prevent breakage
+    partHtml = partHtml.replace(/&/g, '&amp;')
+                       .replace(/</g, '&lt;')
+                       .replace(/>/g, '&gt;');
+    
+    partHtml = fixEncoding(partHtml);
+    
+    if (attrs[DocumentApp.Attribute.BOLD]) partHtml = '<strong>' + partHtml + '</strong>';
+    if (attrs[DocumentApp.Attribute.ITALIC]) partHtml = '<em>' + partHtml + '</em>';
+    if (attrs[DocumentApp.Attribute.UNDERLINE]) partHtml = '<u>' + partHtml + '</u>';
+    if (attrs[DocumentApp.Attribute.STRIKETHROUGH]) partHtml = '<span class="line-through">' + partHtml + '</span>';
+    if (attrs[DocumentApp.Attribute.LINK_URL]) {
+      partHtml = '<a href="' + attrs[DocumentApp.Attribute.LINK_URL] + '" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300 underline">' + partHtml + '</a>';
+    }
+    
+    html += partHtml;
+  }
+  
+  return html;
 }
