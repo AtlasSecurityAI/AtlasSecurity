@@ -114,4 +114,10 @@
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
+  <url>
+    <loc>https://atlassecurityai.github.io/AtlasSecurity/articles/57using-ai-is-easy-trusting-it-is-the-real-challenge.html</loc>
+    <lastmod>2026-02-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
 </urlset>
