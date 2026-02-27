@@ -210,4 +210,10 @@
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
+  <url>
+    <loc>https://atlassecurityai.github.io/AtlasSecurity/articles/the-invisible-engine-running-your-website-and-why-hackers-love-it.html</loc>
+    <lastmod>2026-02-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
 </urlset>
