@@ -216,4 +216,10 @@
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
+  <url>
+    <loc>https://atlassecurityai.github.io/AtlasSecurity/articles/your-data-is-leaking-and-it-s-usually-an-accident.html</loc>
+    <lastmod>2026-02-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
 </urlset>
