@@ -174,4 +174,10 @@
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
+  <url>
+    <loc>https://atlassecurityai.github.io/AtlasSecurity/articles/the-trojan-horse-in-the-server-room-why-your-ai-vendor-matters.html</loc>
+    <lastmod>2026-02-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
 </urlset>
