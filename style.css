@@ -299,3 +299,17 @@ ul, ol {
   margin-bottom: 12px !important;
   padding-left: 40px !important;
 }
+
+/* Glassmorphic card styling matching the page design */
+.glass-card {
+    background: rgba(255, 255, 255, 0.45) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+    border-color: rgba(255, 255, 255, 0.4) !important;
+}
+body.dark .glass-card {
+    background: rgba(26, 31, 41, 0.55) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+    border-color: rgba(255, 255, 255, 0.08) !important;
+}

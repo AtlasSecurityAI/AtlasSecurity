@@ -4,37 +4,41 @@
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>Tech Insights - AtlasSECURITY</title>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Noto+Sans:wght@400;500;700&display=swap" rel="stylesheet"/>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=Noto+Sans:wght@400;500;700&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script>
       tailwind.config = {
+        darkMode: 'class',
         theme: {
           extend: {
             colors: {
-              "primary": "#0052cc", 
-              "primary-dark": "#003d99",
-              "accent-blue": "#2b8cee",
-              "background-light": "#ffffff",
-              "surface-light": "#f8fafc",
+              "primary": "#137fec", 
+              "primary-dark": "#0c63c0",
+              "background-light": "#f6f7f8",
+              "surface-light": "#ffffff",
+              "border-light": "#f0f2f4",
+              "text-main": "#111418",
               "cool-gray": "#cbd5e1",
-              "text-main": "#0f172a",
               "text-muted": "#64748b",
             },
             fontFamily: {
+              "sans": ["Inter", "sans-serif"],
+              "body": ["Inter", "sans-serif"],
               "display": ["Space Grotesk", "sans-serif"],
-              "body": ["Noto Sans", "sans-serif"],
-            },
-            boxShadow: {
-              'soft': '0 20px 40px -10px rgba(0, 50, 100, 0.1)',
-              'card': '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)',
-              'glow': '0 0 20px rgba(43, 140, 238, 0.3)',
             }
           },
         },
       }
     </script>
+    <!-- Custom Style Sheet -->
+    <link rel="stylesheet" href="style.css">
     <style>
+        html {
+            scroll-behavior: smooth;
+        }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         .glass-panel {
@@ -44,37 +48,75 @@
         }
         ::selection {
             background: #e0f2fe;
-            color: #0052cc;
+            color: #137fec;
         }
         body {
-            min-height: max(884px, 100dvh);
+            transition: background-color 0.3s, color 0.3s;
+        }
+        /* Custom active indicator on navigation links */
+        .nav-link-active {
+            color: #137fec !important;
+            font-weight: 700;
         }
     </style>
 </head>
-<body class="bg-surface-light text-text-main font-body antialiased">
-<video autoplay muted loop playsinline class="fixed inset-0 w-full h-full object-cover" style="z-index: -2; filter: brightness(0.95);">
-<source src="images/newvid.mp4" type="video/mp4">
-</video>
-<div class="fixed inset-0 bg-slate-800/40 pointer-events-none" style="z-index: -1;"></div>
+<body class="bg-transparent text-text-main font-sans antialiased overflow-x-hidden pb-16 md:pb-0">
 
-<div class="relative min-h-screen flex flex-col pb-24">
+    <!-- Video Background (consistent with other pages) -->
+    <video autoplay muted loop playsinline class="fixed inset-0 w-full h-full object-cover z-0" style="filter: brightness(0.95);">
+        <source src="images/newvid.mp4" type="video/mp4">
+    </video>
+    <!-- Overlay adapting to light/dark mode for readability -->
+    <div class="fixed inset-0 bg-[#f6f7f8]/40 dark:bg-[#101922]/60 pointer-events-none transition-colors duration-300 z-0"></div>
 
-    <nav class="fixed top-0 w-full z-50 glass-panel border-b border-slate-100 transition-all duration-300">
-<div class="relative flex items-center justify-center px-5 py-6">
-<a href="index.html" class="flex items-center gap-3">
-<span class="material-symbols-outlined text-transparent bg-clip-text bg-gradient-to-r from-[#0052cc] to-indigo-600" style="font-size: 32px;">security</span>
-<h1 class="text-3xl md:text-4xl font-extrabold tracking-tight text-slate-900">Atlas<span class="text-transparent bg-clip-text bg-gradient-to-r from-[#0052cc] to-indigo-600">SECURITY</span></h1>
-</a>
-<button id="menu-button" class="absolute right-5 p-2 text-slate-600 hover:text-primary transition-colors rounded-full hover:bg-slate-50">
-<span class="material-symbols-outlined" style="font-size: 24px;">menu</span>
-</button>
-<div id="menu" class="hidden absolute top-16 right-5 bg-white rounded-lg shadow-lg p-2">
-<a href="index.html" class="block px-4 py-2 text-slate-700 hover:bg-slate-100">Home</a>
-<a href="about.html" class="block px-4 py-2 text-slate-700 hover:bg-slate-100">About</a>
-<a href="insights.html" class="block px-4 py-2 text-slate-700 hover:bg-slate-100">Insights</a>
-</div>
-</div>
-</nav>
+    <!-- Wrapper to force page content to stack in front of the background video layers -->
+    <div class="relative z-10 min-h-screen flex flex-col pb-24 overflow-x-hidden">
+
+    <!-- Top Sticky Header -->
+    <nav class="sticky-nav w-full transition-all duration-300">
+        <div class="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
+            <!-- Brand Logo -->
+            <a href="index.html" class="flex items-center gap-3">
+                <span class="material-symbols-outlined text-[#137fec]" style="font-size: 32px;">security</span>
+                <h1 class="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+                    Atlas<span class="text-[#137fec]">SECURITY</span>
+                </h1>
+            </a>
+
+            <!-- Desktop Navigation Links -->
+            <div class="hidden md:flex items-center gap-8">
+                <a href="index.html" class="text-slate-600 dark:text-slate-300 hover:text-[#137fec] transition font-medium">Home</a>
+                <a href="about.html" class="text-slate-600 dark:text-slate-300 hover:text-[#137fec] transition font-medium">About</a>
+                <a href="services.html" class="text-slate-600 dark:text-slate-300 hover:text-[#137fec] transition font-medium">Services</a>
+                <a href="insights.html" class="nav-link-active transition">Insights</a>
+                
+                <!-- Dark Mode Toggle (Desktop) -->
+                <button id="theme-toggle-desktop" class="p-2 text-slate-600 dark:text-slate-300 hover:text-[#137fec] rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition" aria-label="Toggle theme">
+                    <span class="material-symbols-outlined text-2xl">dark_mode</span>
+                </button>
+            </div>
+
+            <!-- Mobile Controls -->
+            <div class="flex items-center gap-2 md:hidden">
+                <!-- Dark Mode Toggle (Mobile) -->
+                <button id="theme-toggle-mobile" class="p-2 text-slate-600 dark:text-slate-300 hover:text-[#137fec] rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition" aria-label="Toggle theme">
+                    <span class="material-symbols-outlined text-2xl">dark_mode</span>
+                </button>
+                <!-- Hamburger Menu Button -->
+                <button id="menu-button" class="p-2 text-slate-600 dark:text-slate-300 hover:text-[#137fec] rounded-full hover:bg-slate-50 dark:hover:bg-slate-800 transition">
+                    <span class="material-symbols-outlined" style="font-size: 28px;">menu</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Dropdown -->
+        <div id="menu" class="hidden absolute top-16 right-5 bg-white dark:bg-[#1a1f29] border border-slate-100 dark:border-slate-800 rounded-xl shadow-xl p-3 w-48 z-50">
+            <a href="index.html" class="block px-4 py-2.5 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition">Home</a>
+            <a href="about.html" class="block px-4 py-2.5 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition">About</a>
+            <a href="services.html" class="block px-4 py-2.5 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition">Services</a>
+            <a href="insights.html" class="block px-4 py-2.5 rounded-lg text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-800 font-bold text-[#137fec] transition">Insights</a>
+        </div>
+    </nav>
 
     <main class="flex-grow pt-32 px-5">
         <div class="container mx-auto max-w-6xl">
@@ -126,40 +168,99 @@
 
   <article class="bg-slate-900/80 backdrop-blur-md border border-indigo-500/20 shadow-2xl rounded-2xl relative overflow-hidden group hover:scale-[1.02] transition-transform duration-300" data-category="risk"><a href="articles/what-to-do-when-your-password-escapes-into-the-wild-worldwideweb.html" class="block p-6 md:p-8 h-full"><div class="flex items-center gap-3 mb-4 flex-wrap"><span class="px-3 py-1 rounded-full text-xs font-semibold tracking-wider bg-blue-500/20 text-blue-300 border border-blue-500/30">RISK</span><span class="px-3 py-1 rounded-full text-xs font-semibold tracking-wider bg-slate-700 text-slate-300 border border-slate-600">JUN 06, 2025</span><span class="text-slate-400 text-xs">•</span><span class="text-slate-400 text-xs">4 MIN READ</span></div><h3 class="text-xl md:text-2xl font-bold text-white mb-3 group-hover:text-blue-300 transition-colors line-clamp-2">What to Do When Your Password Escapes into the Wild WorldWideWeb</h3><p class="text-slate-300 text-sm leading-relaxed mb-6 line-clamp-3">Data breaches are no longer rare events. They are part of the digital economy. The real risk is not that a website is hacked. The real risk is what happens next...</p><div class="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 text-sm font-medium transition-all group/link group-hover/link:gap-3">READ FULL INSIGHT<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg></div></a></article>
 
-            </div>
         </div>
+
     </main>
     
-    <nav class="fixed bottom-0 w-full z-50 bg-white/90 backdrop-blur-lg border-t border-slate-200 safe-area-bottom">
-<div class="flex items-center justify-around px-2 py-3 pb-6 md:pb-3">
-<a class="flex flex-col items-center gap-1 group w-16 text-slate-400 hover:text-slate-900 transition-colors" href="index.html">
-<div class="p-1 rounded-full group-hover:bg-slate-50 transition-colors">
-<span class="material-symbols-outlined text-2xl">home</span>
-</div>
-<span class="text-[10px] font-medium">AtlasSecurity</span>
-</a>
-<a class="flex flex-col items-center gap-1 group w-16 text-slate-400 hover:text-slate-900 transition-colors" href="about.html">
-<div class="p-1 rounded-full group-hover:bg-slate-50 transition-colors">
-<span class="material-symbols-outlined text-2xl">info</span>
-</div>
-<span class="text-[10px] font-medium">About</span>
-</a>
-<a class="flex flex-col items-center gap-1 group w-16" href="insights.html">
-<div class="p-1 rounded-full bg-blue-50 transition-colors">
-<span class="material-symbols-outlined text-2xl text-primary">article</span>
-</div>
-<span class="text-[10px] font-bold text-primary whitespace-nowrap text-center">Tech Insights</span>
-</a>
-</div>
-</nav>
-</div>
-<script>
-    const menuButton = document.getElementById('menu-button');
-    const menu = document.getElementById('menu');
+    <!-- Sticky Navigation Bar (Bottom - matching other pages) -->
+    <nav class="fixed bottom-0 w-full z-50 bg-white/95 dark:bg-[#1a1f29]/95 backdrop-blur-lg border-t border-slate-200 dark:border-slate-800 safe-area-bottom transition-colors duration-300">
+        <div class="flex items-center justify-around px-2 py-3 pb-5">
+            <a class="flex flex-col items-center gap-1 group w-16 text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors" href="index.html">
+                <div class="p-1 rounded-full group-hover:bg-slate-50 dark:group-hover:bg-slate-800 transition">
+                    <span class="material-symbols-outlined text-2xl">home</span>
+                </div>
+                <span class="text-[10px] font-medium">Home</span>
+            </a>
+            <a class="flex flex-col items-center gap-1 group w-16 text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors" href="about.html">
+                <div class="p-1 rounded-full group-hover:bg-slate-50 dark:group-hover:bg-slate-800 transition">
+                    <span class="material-symbols-outlined text-2xl">info</span>
+                </div>
+                <span class="text-[10px] font-medium">About</span>
+            </a>
+            <a class="flex flex-col items-center gap-1 group w-16 text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors" href="services.html">
+                <div class="p-1 rounded-full group-hover:bg-slate-50 dark:group-hover:bg-slate-800 transition">
+                    <span class="material-symbols-outlined text-2xl">security</span>
+                </div>
+                <span class="text-[10px] font-medium">Services</span>
+            </a>
+            <a class="flex flex-col items-center gap-1 group w-16" href="insights.html">
+                <div class="p-1 rounded-full bg-blue-50 dark:bg-blue-900/30 transition">
+                    <span class="material-symbols-outlined text-2xl text-[#137fec]">article</span>
+                </div>
+                <span class="text-[10px] font-bold text-[#137fec] whitespace-nowrap">Insights</span>
+            </a>
+        </div>
+    </nav>
 
-    menuButton.addEventListener('click', () => {
-        menu.classList.toggle('hidden');
-    });
-</script>
+    </div> <!-- Close Wrapper -->
+
+    <!-- Interactive Scripts -->
+    <script>
+        // Hamburger Menu Toggle
+        const menuButton = document.getElementById('menu-button');
+        const menu = document.getElementById('menu');
+
+        menuButton.addEventListener('click', (e) => {
+            menu.classList.toggle('hidden');
+            e.stopPropagation();
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', () => {
+            if (!menu.classList.contains('hidden')) {
+                menu.classList.add('hidden');
+            }
+        });
+
+        // Dark/Light Theme Handler
+        const themeToggleDesktop = document.getElementById('theme-toggle-desktop');
+        const themeToggleMobile = document.getElementById('theme-toggle-mobile');
+
+        // Functions to apply theme settings
+        function updateThemeIcons(isDark) {
+            const iconText = isDark ? 'light_mode' : 'dark_mode';
+            if (themeToggleDesktop) themeToggleDesktop.querySelector('span').textContent = iconText;
+            if (themeToggleMobile) themeToggleMobile.querySelector('span').textContent = iconText;
+        }
+
+        function toggleTheme() {
+            const isDark = document.body.classList.toggle('dark');
+            document.documentElement.classList.toggle('dark', isDark);
+            
+            // Save to localStorage
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            updateThemeIcons(isDark);
+        }
+
+        // Initialize Theme from localStorage or Preferences
+        const savedTheme = localStorage.getItem('theme');
+        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        
+        const shouldBeDark = savedTheme === 'dark' || (!savedTheme && systemPrefersDark);
+        
+        if (shouldBeDark) {
+            document.body.classList.add('dark');
+            document.documentElement.classList.add('dark');
+            updateThemeIcons(true);
+        } else {
+            document.body.classList.remove('dark');
+            document.documentElement.classList.remove('dark');
+            updateThemeIcons(false);
+        }
+
+        // Event listeners
+        if (themeToggleDesktop) themeToggleDesktop.addEventListener('click', toggleTheme);
+        if (themeToggleMobile) themeToggleMobile.addEventListener('click', toggleTheme);
+    </script>
 </body>
 </html>
