@@ -472,26 +472,31 @@
                                 <div class="flex flex-col items-center gap-12">
                                     <!-- Form Section -->
                                     <div class="w-full max-w-xl mx-auto bg-slate-900/90 backdrop-blur-md rounded-3xl shadow-2xl shadow-indigo-500/20 p-8 md:p-10 border border-indigo-500/20 mb-4">
-                                        <form class="space-y-6">
+                                        <form id="contact-form" action="https://formspree.io/f/xpqgwvjk" method="POST" class="space-y-6">
+                                            <input type="hidden" name="_subject" value="New AtlasSecurity Contact Form Submission">
                                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                                 <div>
                                                     <label for="name" class="block text-sm font-semibold text-white uppercase tracking-wider mb-2">Full Name</label>
-                                                    <input type="text" id="name" class="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/50 transition-all duration-300" placeholder="Your Name">
+                                                    <input type="text" id="name" name="name" class="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/50 transition-all duration-300" placeholder="Your Name" required>
                                                 </div>
                                                 <div>
                                                     <label for="email" class="block text-sm font-semibold text-white uppercase tracking-wider mb-2">Email Address</label>
-                                                    <input type="email" id="email" class="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/50 transition-all duration-300" placeholder="you@example.com">
+                                                    <input type="email" id="email" name="email" class="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/50 transition-all duration-300" placeholder="you@example.com" required>
                                                 </div>
                                             </div>
                                             <div>
                                                 <label for="message" class="block text-sm font-semibold text-white uppercase tracking-wider mb-2">Message</label>
-                                                <textarea id="message" rows="4" class="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/50 transition-all duration-300" placeholder="How can we help?"></textarea>
+                                                <textarea id="message" name="message" rows="4" class="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/50 transition-all duration-300" placeholder="How can we help?" required></textarea>
                                             </div>
-                                            <button type="button" class="w-full py-4 bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-bold uppercase tracking-wider rounded-xl hover:bg-indigo-700 hover:shadow-lg hover:shadow-indigo-500/40 transform hover:-translate-y-0.5 transition-all duration-300 flex items-center justify-center gap-2">
+                                            <button type="submit" class="w-full py-4 bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-bold uppercase tracking-wider rounded-xl hover:bg-indigo-700 hover:shadow-lg hover:shadow-indigo-500/40 transform hover:-translate-y-0.5 transition-all duration-300 flex items-center justify-center gap-2">
                                                 <span class="material-symbols-outlined">lock</span>
                                                 SEND SECURE MESSAGE
                                             </button>
                                         </form>
+                                        <div id="contact-success" class="hidden w-full px-6 py-12 bg-[#137fec] text-white font-bold rounded-2xl shadow-lg text-center flex flex-col items-center justify-center">
+                                            <span class="material-symbols-outlined text-4xl mb-3 text-white">done</span>
+                                            <span class="text-lg">Thank you! Welcome to AtlasSecurity. We'll be in touch soon.</span>
+                                        </div>
                                     </div>
                                 </div>
                     </div>
@@ -598,6 +603,38 @@
          btn.textContent = 'Read More';
        }
      }
+
+    // Formspree Contact Form Submission Handler
+    const contactForm = document.getElementById('contact-form');
+    const contactSuccess = document.getElementById('contact-success');
+
+    if (contactForm) {
+        contactForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const data = new FormData(contactForm);
+            
+            try {
+                const response = await fetch(contactForm.action, {
+                    method: 'POST',
+                    body: data,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    contactForm.classList.add('hidden');
+                    contactSuccess.classList.remove('hidden');
+                    contactForm.reset();
+                } else {
+                    const result = await response.json();
+                    alert(result.errors ? result.errors.map(err => err.message).join(', ') : 'Oops! There was a problem submitting your form');
+                }
+            } catch (error) {
+                alert('Oops! There was a problem submitting your form');
+            }
+        });
+    }
 </script>
 </body>
 </html>
